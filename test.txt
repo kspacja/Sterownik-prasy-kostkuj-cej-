@@ -1,2 +1,0 @@
-Testowy commit do bazy danych23
-Oczywiście vim
