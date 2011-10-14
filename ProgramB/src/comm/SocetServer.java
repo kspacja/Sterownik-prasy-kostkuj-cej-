@@ -6,12 +6,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public class SocetCommunicator implements Runnable
+public class SocetServer implements Runnable
 {
 	private DatagramSocket socket;
-	private byte[] lenbuf = new byte[2];
+	private byte[] lenbuf = new byte[4];
 	
-	public SocetCommunicator(int port) throws SocketException
+	public SocetServer(int port) throws SocketException
 	{
 		socket = new DatagramSocket(port);
 	}
@@ -35,7 +35,10 @@ public class SocetCommunicator implements Runnable
 				continue;
 			}
 			
-			int len = (lenpacket.getData()[0] << 1) + lenpacket.getData()[1];
+			int len = (lenpacket.getData()[0] << 3) +
+					(lenpacket.getData()[1] << 2) +
+					(lenpacket.getData()[2] << 1) +
+					lenpacket.getData()[3];
 			
 			// Oczekuje na otrzymanie właściwego pakietu
 			byte[] buf = new byte[len];
@@ -70,8 +73,8 @@ public class SocetCommunicator implements Runnable
 				}
 			}
 			
-			// Zeruję bardziej znaczący bajt bufora długości
-			lenbuf[0] = 0;
+			// Zeruję bufor długości
+			java.util.Arrays.fill(lenbuf, (byte)0);
 		}
 	}
 	
