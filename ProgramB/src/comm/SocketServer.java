@@ -6,12 +6,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-public class SocetServer implements Runnable
+public class SocketServer implements Runnable
 {
 	private DatagramSocket socket;
 	private byte[] lenbuf = new byte[4];
 	
-	public SocetServer(int port) throws SocketException
+	public SocketServer(int port) throws SocketException
 	{
 		socket = new DatagramSocket(port);
 	}
@@ -91,6 +91,7 @@ public class SocetServer implements Runnable
 	 */
 	private byte[] processRequest(String req)
 	{
+		System.out.println(req);
 		return null;
 	}
 	
@@ -126,5 +127,11 @@ public class SocetServer implements Runnable
 		}
 		
 		return res;
+	}
+	
+	public static void main(String[] args) throws SocketException
+	{
+		SocketServer s = new SocketServer(6666);
+		s.run();
 	}
 }

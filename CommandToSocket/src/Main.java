@@ -54,12 +54,12 @@ public class Main {
 	        
 	        InetAddress address = InetAddress.getByName("localhost");
 	        
-	        DatagramPacket packet = new DatagramPacket(len, len.length, address, 666);
+	        DatagramPacket packet = new DatagramPacket(len, len.length, address, 6666);
 	        socket.send(packet);
 	        
 	        buf = commandList.toString().getBytes();
 	        
-	        packet = new DatagramPacket(buf, buf.length, address, 666);
+	        packet = new DatagramPacket(buf, buf.length, address, 6666);
 	        socket.send(packet);
 	        
 	        socket.close();
