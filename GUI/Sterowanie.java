@@ -38,7 +38,7 @@ public class Sterowanie {
         System.out.println("Obrót silnika "+zmien(x)+" w prawo z mocą"+q);
      }
 
-     public static void engineStop(){
-         System.out.println("Silnik zatrzymany");
+     public static void engineStop(int x){
+         System.out.println("Silnik zatrzymany "+x);
      }    
 }

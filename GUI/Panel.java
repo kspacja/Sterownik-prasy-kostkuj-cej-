@@ -17,6 +17,7 @@ public class Panel extends javax.swing.JFrame {
     public Panel() {
         initComponents();
         jTextField1.setText("");
+        jTextField2.setText("");
 
     }
 
@@ -29,11 +30,6 @@ public class Panel extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
-        buttonSilnikA = new javax.swing.JToggleButton();
-        buttonSilnikB = new javax.swing.JToggleButton();
-        buttonSilnikC = new javax.swing.JToggleButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         Wyjscie1 = new javax.swing.JTextArea();
@@ -86,76 +82,36 @@ public class Panel extends javax.swing.JFrame {
         leftButton = new javax.swing.JToggleButton();
         rightButton = new javax.swing.JToggleButton();
         jLabel3 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         sendCommandLine = new javax.swing.JButton();
+        jPanel5 = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        tryb1 = new javax.swing.JComboBox();
+        jTextField2 = new javax.swing.JTextField();
+        jButton2 = new javax.swing.JButton();
+        mocSilnika1 = new javax.swing.JSlider();
+        moc1 = new javax.swing.JTextField();
+        stopButton1 = new javax.swing.JButton();
+        leftButton1 = new javax.swing.JToggleButton();
+        rightButton1 = new javax.swing.JToggleButton();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel8 = new javax.swing.JPanel();
+        jLabel13 = new javax.swing.JLabel();
+        tryb4 = new javax.swing.JComboBox();
+        jTextField5 = new javax.swing.JTextField();
+        jButton5 = new javax.swing.JButton();
+        mocSilnika4 = new javax.swing.JSlider();
+        moc4 = new javax.swing.JTextField();
+        stopButton4 = new javax.swing.JButton();
+        leftButton4 = new javax.swing.JToggleButton();
+        rightButton4 = new javax.swing.JToggleButton();
+        jLabel14 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sterowanie");
-
-        jLabel1.setText("Wybór silnika:");
-
-        buttonSilnikA.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorA.png"))); // NOI18N
-        buttonSilnikA.setBorder(null);
-        buttonSilnikA.setPreferredSize(new java.awt.Dimension(50, 50));
-        buttonSilnikA.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                buttonSilnikAItemStateChanged(evt);
-            }
-        });
-
-        buttonSilnikB.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorB.png"))); // NOI18N
-        buttonSilnikB.setBorder(null);
-        buttonSilnikB.setPreferredSize(new java.awt.Dimension(50, 50));
-        buttonSilnikB.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                buttonSilnikBItemStateChanged(evt);
-            }
-        });
-        buttonSilnikB.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSilnikBActionPerformed(evt);
-            }
-        });
-
-        buttonSilnikC.setIcon(new javax.swing.ImageIcon(getClass().getResource("/motorC.png"))); // NOI18N
-        buttonSilnikC.setBorder(null);
-        buttonSilnikC.setPreferredSize(new java.awt.Dimension(50, 50));
-        buttonSilnikC.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                buttonSilnikCItemStateChanged(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addGap(18, 18, 18)
-                .addComponent(buttonSilnikA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(buttonSilnikB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(buttonSilnikC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(243, Short.MAX_VALUE))
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel1))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(buttonSilnikA, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonSilnikB, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(buttonSilnikC, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
 
         Wyjscie1.setColumns(20);
         Wyjscie1.setRows(5);
@@ -509,7 +465,7 @@ public class Panel extends javax.swing.JFrame {
                         .addComponent(typeButtonTouch4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(typeButtonLight4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(typeButtonUltrasonic4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(48, Short.MAX_VALUE))
+                .addContainerGap(632, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -636,66 +592,74 @@ public class Panel extends javax.swing.JFrame {
 
         jLabel3.setText("Moc silnika:");
 
+        jLabel6.setText("Silnik B");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel3))
-                .addGap(10, 10, 10)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(tryb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(leftButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(16, 16, 16)))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(tryb, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel3Layout.createSequentialGroup()
+                                        .addComponent(mocSilnika, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(moc, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(rightButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(mocSilnika, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(moc, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(58, 58, 58)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(48, 48, 48)
+                        .addComponent(stopButton, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(leftButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rightButton, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(46, 46, 46))
+                        .addContainerGap()
+                        .addComponent(jLabel6)))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(tryb, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(jLabel2)
-                                .addComponent(jButton1))))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                            .addComponent(leftButton, javax.swing.GroupLayout.Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                            .addComponent(rightButton, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addComponent(jLabel6)
+                .addGap(19, 19, 19)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                    .addComponent(tryb, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(jButton1)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(moc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(stopButton))
+                            .addComponent(moc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(mocSilnika, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
+                        .addGap(44, 44, 44))
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
                         .addComponent(jLabel3)
-                        .addContainerGap())))
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(leftButton, 0, 0, Short.MAX_VALUE)
+                            .addComponent(rightButton, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(stopButton)
+                .addGap(66, 66, 66))
         );
 
         sendCommandLine.setText("sendCommandLine");
@@ -712,7 +676,7 @@ public class Panel extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGap(26, 26, 26)
                 .addComponent(sendCommandLine)
-                .addContainerGap(377, Short.MAX_VALUE))
+                .addContainerGap(961, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -722,6 +686,267 @@ public class Panel extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel5.setToolTipText("");
+        jPanel5.setName(""); // NOI18N
+
+        jLabel4.setText("Obrót o");
+
+        tryb1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+
+        jTextField2.setText("jTextField1");
+
+        jButton2.setText("Wykonaj");
+        jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton2MouseClicked(evt);
+            }
+        });
+
+        mocSilnika1.setMajorTickSpacing(25);
+        mocSilnika1.setMinimum(-100);
+        mocSilnika1.setPaintTicks(true);
+        mocSilnika1.setValue(70);
+        mocSilnika1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                mocSilnika1StateChanged(evt);
+            }
+        });
+
+        moc1.setText("70");
+        moc1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                moc1KeyTyped(evt);
+            }
+        });
+
+        stopButton1.setText("Stop");
+        stopButton1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                stopButton1MouseClicked(evt);
+            }
+        });
+
+        leftButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow-left-blue.png"))); // NOI18N
+        leftButton1.setPreferredSize(new java.awt.Dimension(30, 40));
+        leftButton1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                leftButton1ItemStateChanged(evt);
+            }
+        });
+        leftButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftButton1ActionPerformed(evt);
+            }
+        });
+
+        rightButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow-right-blue.png"))); // NOI18N
+        rightButton1.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rightButton1ItemStateChanged(evt);
+            }
+        });
+
+        jLabel5.setText("Moc silnika:");
+
+        jLabel1.setText("Silnik A");
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                                .addComponent(leftButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(16, 16, 16)))
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(tryb1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel5Layout.createSequentialGroup()
+                                        .addComponent(mocSilnika1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(moc1, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel5Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(rightButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(stopButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addComponent(jLabel1)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tryb1, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel4)
+                        .addComponent(jButton2)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel5Layout.createSequentialGroup()
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(moc1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mocSilnika1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44))
+                    .addGroup(jPanel5Layout.createSequentialGroup()
+                        .addComponent(jLabel5)
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(leftButton1, 0, 0, Short.MAX_VALUE)
+                            .addComponent(rightButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(stopButton1)
+                .addGap(66, 66, 66))
+        );
+
+        jLabel13.setText("Obrót o");
+
+        tryb4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+
+        jTextField5.setText("jTextField1");
+
+        jButton5.setText("Wykonaj");
+        jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButton5MouseClicked(evt);
+            }
+        });
+
+        mocSilnika4.setMajorTickSpacing(25);
+        mocSilnika4.setMinimum(-100);
+        mocSilnika4.setPaintTicks(true);
+        mocSilnika4.setValue(70);
+        mocSilnika4.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                mocSilnika4StateChanged(evt);
+            }
+        });
+
+        moc4.setText("70");
+        moc4.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                moc4KeyTyped(evt);
+            }
+        });
+
+        stopButton4.setText("Stop");
+        stopButton4.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                stopButton4MouseClicked(evt);
+            }
+        });
+
+        leftButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow-left-blue.png"))); // NOI18N
+        leftButton4.setPreferredSize(new java.awt.Dimension(30, 40));
+        leftButton4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                leftButton4ItemStateChanged(evt);
+            }
+        });
+        leftButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                leftButton4ActionPerformed(evt);
+            }
+        });
+
+        rightButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/arrow-right-blue.png"))); // NOI18N
+        rightButton4.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                rightButton4ItemStateChanged(evt);
+            }
+        });
+
+        jLabel14.setText("Moc silnika:");
+
+        jLabel15.setText("Silnik C");
+
+        javax.swing.GroupLayout jPanel8Layout = new javax.swing.GroupLayout(jPanel8);
+        jPanel8.setLayout(jPanel8Layout);
+        jPanel8Layout.setHorizontalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                                .addComponent(leftButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(16, 16, 16)))
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(10, 10, 10)
+                                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel8Layout.createSequentialGroup()
+                                        .addComponent(tryb4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(jPanel8Layout.createSequentialGroup()
+                                        .addComponent(mocSilnika4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                        .addComponent(moc4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addGroup(jPanel8Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(rightButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(stopButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel15)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel8Layout.setVerticalGroup(
+            jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel8Layout.createSequentialGroup()
+                .addComponent(jLabel15)
+                .addGap(19, 19, 19)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(tryb4, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 23, Short.MAX_VALUE)
+                    .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel13)
+                        .addComponent(jButton5)))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel8Layout.createSequentialGroup()
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(moc4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(mocSilnika4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(44, 44, 44))
+                    .addGroup(jPanel8Layout.createSequentialGroup()
+                        .addComponent(jLabel14)
+                        .addGap(30, 30, 30)
+                        .addGroup(jPanel8Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(leftButton4, 0, 0, Short.MAX_VALUE)
+                            .addComponent(rightButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, Short.MAX_VALUE))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(stopButton4)
+                .addGap(66, 66, 66))
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -729,24 +954,32 @@ public class Panel extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(22, 22, 22))
         );
+
+        jPanel5.getAccessibleContext().setAccessibleDescription("null");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -764,7 +997,7 @@ public class Panel extends javax.swing.JFrame {
         int q = 0;
         q = mocSilnika.getValue();
         z = tryb.getSelectedIndex();
-        x = silnik +1;
+        x = 2;
         try{
             y = Integer.parseInt(jTextField1.getText());
         } catch(Exception e){
@@ -798,7 +1031,7 @@ public class Panel extends javax.swing.JFrame {
 
     private void leftButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_leftButtonItemStateChanged
         if (evt.getStateChange() == 1){
-        int x = silnik +1;
+        int x = 2;
         int q = mocSilnika.getValue();
         Sterowanie.leftTurn(x,q);
         rightButton.setSelected(false);
@@ -807,7 +1040,7 @@ public class Panel extends javax.swing.JFrame {
 
     private void rightButtonItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rightButtonItemStateChanged
         if (evt.getStateChange() == 1){
-        int x = silnik +1;
+        int x = 2;
         int q = mocSilnika.getValue();
         Sterowanie.rightTurn(x,q);
         leftButton.setSelected(false);
@@ -815,26 +1048,8 @@ public class Panel extends javax.swing.JFrame {
     }//GEN-LAST:event_rightButtonItemStateChanged
 
     private void stopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButtonMouseClicked
-        Sterowanie.engineStop();
+        Sterowanie.engineStop(2);
     }//GEN-LAST:event_stopButtonMouseClicked
-
-    private void buttonSilnikAItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_buttonSilnikAItemStateChanged
-        if (evt.getStateChange() == 1)
-        silnik = 0;        
-        else silnik = -1;
-    }//GEN-LAST:event_buttonSilnikAItemStateChanged
-
-    private void buttonSilnikBItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_buttonSilnikBItemStateChanged
-        if (evt.getStateChange() == 1)
-        silnik = 1;        
-        else silnik = -1;
-    }//GEN-LAST:event_buttonSilnikBItemStateChanged
-
-    private void buttonSilnikCItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_buttonSilnikCItemStateChanged
-        if (evt.getStateChange() == 1)
-        silnik = 2;        
-        else silnik = -1;
-    }//GEN-LAST:event_buttonSilnikCItemStateChanged
 
     private void typeButtonTouchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonTouchActionPerformed
         // TODO add your handling code here:
@@ -846,10 +1061,6 @@ public class Panel extends javax.swing.JFrame {
         Czujniki.setSensorType(1);}
         else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonTouchItemStateChanged
-
-    private void buttonSilnikBActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSilnikBActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_buttonSilnikBActionPerformed
 
     private void wczytaj2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wczytaj2MouseClicked
         Czujniki.setSensorMode(modeBox2.getSelectedIndex());
@@ -1018,6 +1229,102 @@ public class Panel extends javax.swing.JFrame {
         CommandLn.CommandLn();
     }//GEN-LAST:event_sendCommandLineMouseClicked
 
+    private void rightButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rightButton1ItemStateChanged
+        if (evt.getStateChange() == 1){
+            int x = 1;
+            int q = mocSilnika1.getValue();
+            Sterowanie.rightTurn(x,q);
+            leftButton1.setSelected(false);
+        }
+}//GEN-LAST:event_rightButton1ItemStateChanged
+
+    private void leftButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftButton1ActionPerformed
+        // TODO add your handling code here:
+}//GEN-LAST:event_leftButton1ActionPerformed
+
+    private void leftButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_leftButton1ItemStateChanged
+        if (evt.getStateChange() == 1){
+            int x = 1;
+            int q = mocSilnika1.getValue();
+            Sterowanie.leftTurn(x,q);
+            rightButton1.setSelected(false);
+        }
+}//GEN-LAST:event_leftButton1ItemStateChanged
+
+    private void stopButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButton1MouseClicked
+        Sterowanie.engineStop(1);
+}//GEN-LAST:event_stopButton1MouseClicked
+
+    private void moc1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moc1KeyTyped
+        if (moc1.getText().compareTo("") != 0) {
+            try {
+                mocSilnika1.setValue(Integer.parseInt(moc1.getText()));
+            } catch(NumberFormatException e){
+                System.out.println("Liczbe wpisz");
+            }
+        }
+}//GEN-LAST:event_moc1KeyTyped
+
+    private void mocSilnika1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_mocSilnika1StateChanged
+        moc1.setText(Integer.toString(mocSilnika1.getValue()));
+}//GEN-LAST:event_mocSilnika1StateChanged
+
+    private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
+        int y = 0;
+        int x = 0;
+        int z = -1;
+        int q = 0;
+        q = mocSilnika1.getValue();
+        z = tryb1.getSelectedIndex();
+        x = 1;
+        try{
+            y = Integer.parseInt(jTextField2.getText());
+        } catch(Exception e){
+            System.out.println("Zły typ danych");
+        }
+        Sterowanie.makeObrot(x, y, z, q);
+}//GEN-LAST:event_jButton2MouseClicked
+
+    private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
+        int y = 0;
+        int x = 0;
+        int z = -1;
+        int q = 0;
+        q = mocSilnika2.getValue();
+        z = tryb2.getSelectedIndex();
+        x = 3;
+        try{
+            y = Integer.parseInt(jTextField3.getText());
+        } catch(Exception e){
+            System.out.println("Zły typ danych");
+        }
+        Sterowanie.makeObrot(x, y, z, q);
+    }//GEN-LAST:event_jButton5MouseClicked
+
+    private void mocSilnika4StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_mocSilnika4StateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_mocSilnika4StateChanged
+
+    private void moc4KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_moc4KeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_moc4KeyTyped
+
+    private void stopButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButton4MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stopButton4MouseClicked
+
+    private void leftButton4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_leftButton4ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_leftButton4ItemStateChanged
+
+    private void leftButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_leftButton4ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_leftButton4ActionPerformed
+
+    private void rightButton4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rightButton4ItemStateChanged
+        // TODO add your handling code here:
+    }//GEN-LAST:event_rightButton4ItemStateChanged
+
     /**
     * @param args the command line arguments
     */
@@ -1052,33 +1359,77 @@ public class Panel extends javax.swing.JFrame {
     private javax.swing.JTextArea Wyjscie2;
     private javax.swing.JTextArea Wyjscie3;
     private javax.swing.JTextArea Wyjscie4;
-    private javax.swing.JToggleButton buttonSilnikA;
-    private javax.swing.JToggleButton buttonSilnikB;
-    private javax.swing.JToggleButton buttonSilnikC;
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
+    private javax.swing.JLabel jLabel12;
+    private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanel6;
+    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
+    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField jTextField5;
     private javax.swing.JToggleButton leftButton;
+    private javax.swing.JToggleButton leftButton1;
+    private javax.swing.JToggleButton leftButton2;
+    private javax.swing.JToggleButton leftButton3;
+    private javax.swing.JToggleButton leftButton4;
     private javax.swing.JTextField moc;
+    private javax.swing.JTextField moc1;
+    private javax.swing.JTextField moc2;
+    private javax.swing.JTextField moc3;
+    private javax.swing.JTextField moc4;
     private javax.swing.JSlider mocSilnika;
+    private javax.swing.JSlider mocSilnika1;
+    private javax.swing.JSlider mocSilnika2;
+    private javax.swing.JSlider mocSilnika3;
+    private javax.swing.JSlider mocSilnika4;
     private javax.swing.JComboBox modeBox1;
     private javax.swing.JComboBox modeBox2;
     private javax.swing.JComboBox modeBox3;
     private javax.swing.JComboBox modeBox4;
     private javax.swing.JToggleButton rightButton;
+    private javax.swing.JToggleButton rightButton1;
+    private javax.swing.JToggleButton rightButton2;
+    private javax.swing.JToggleButton rightButton3;
+    private javax.swing.JToggleButton rightButton4;
     private javax.swing.JButton sendCommandLine;
     private javax.swing.JButton stopButton;
+    private javax.swing.JButton stopButton1;
+    private javax.swing.JButton stopButton2;
+    private javax.swing.JButton stopButton3;
+    private javax.swing.JButton stopButton4;
     private javax.swing.JComboBox tryb;
+    private javax.swing.JComboBox tryb1;
+    private javax.swing.JComboBox tryb2;
+    private javax.swing.JComboBox tryb3;
+    private javax.swing.JComboBox tryb4;
     private javax.swing.JToggleButton typeButtonLight1;
     private javax.swing.JToggleButton typeButtonLight2;
     private javax.swing.JToggleButton typeButtonLight3;
