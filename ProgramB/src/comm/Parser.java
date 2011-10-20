@@ -5,24 +5,7 @@ import java.nio.ByteOrder;
 
 public class Parser
 {
-	private static class Constants
-	{
-		public static final byte MOTOR_A = 0;
-		public static final byte MOTOR_B = 1;
-		public static final byte MOTOR_C = 2;
-		public static final byte MOTOR_ALL = (byte)0xFF;
-
-		public static final byte SENSOR_TOUCH = 1;
-		
-		public static final byte SMODE_RAW = 0;
-		public static final byte SMODE_BOOL = 0x20;
-		public static final byte SMODE_SWITCH = 0x40;
-		public static final byte SMODE_PERIODIC = 0x60;
-		public static final byte SMODE_PERCENT = (byte)0x80;
-	}
-
-	// Zwraca tablicę bajtów, które będzie mogła być wysłana do robota
-	public static byte[] parse(String request) throws ParserException
+	public static void parse(String request) throws ParserException
 	{
 		String[] args = request.split(" ");
 
@@ -91,17 +74,10 @@ public class Parser
 				}
 			}
 
-			bb.put((byte)0);
-			bb.put((byte)4);
-			bb.put(abc);
-			bb.put((byte)(pow * powmod));
-			bb.put((byte)3); // MOTORON + BRAKE
-			bb.put((byte)0);
-			bb.put((byte)0);
-			bb.put((byte)0x20); //TODO Teraz tylko running, potem dodać inne tryby
-			bb.putInt(tacholimit);
-
-			return bb.array();
+			RobotMaster.getInstance().motor(abc, (byte)(pow*powmod), (byte)3, (byte)0, (byte)0,
+				(byte)0x20, tacholimit);
+			// 3 - MOTORON + BRAKE
+			//TODO 0c20 - Teraz tylko running, potem dodać inne tryby
 		}
 		else if(args[0].equalsIgnoreCase("get-sensor"))
 		{
@@ -110,7 +86,7 @@ public class Parser
 				byte sen = Byte.parseByte(args[1]);
 				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [0-3]");
-				return new byte[] {0, 7, sen};
+				RobotMaster.getInstance().getSensor(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -124,7 +100,8 @@ public class Parser
 				byte sen = Byte.parseByte(args[1]);
 				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [0-3]");
-				return new byte[] {0, 8, sen};
+				
+				RobotMaster.getInstance().resetSensorScaledValue(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -175,7 +152,7 @@ public class Parser
 							"should be 'type', 'mode'");
 				}
 				
-				return new byte[] {0, 5, sen, type, mode};
+				RobotMaster.getInstance().setSensor(sen, type, mode);
 			}
 			catch(NumberFormatException e)
 			{
