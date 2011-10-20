@@ -40,7 +40,10 @@ public class Polaczenie {
 
 	public static void main(String[] args) throws InterruptedException {
 		//adres do jarka
-		Polaczenie polaczenie = new Polaczenie("btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false", 500);
+//		Polaczenie polaczenie = new Polaczenie("btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false", 500);
+		//adres do ewy
+		Polaczenie polaczenie = new Polaczenie("btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false", 500);
+		
 		
 		//silniki
 		polaczenie.wyslij(new byte[] {0x00,0x04,0x00,90,0x01,0x00,0,0x20,0,0,0,0, 0});
