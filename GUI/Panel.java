@@ -1353,14 +1353,14 @@ public class Panel extends javax.swing.JFrame {
 
         if (returnVal == JFileChooser.APPROVE_OPTION){
              File file = fc.getSelectedFile();
-             String string = file.getPath();
+             //String string = file.getPath();
 
-             String path = string.substring(0, string.lastIndexOf( "\\" ));
+             String path = file.getParent();
              System.out.println(path);
-             String fileName = string.substring(string.lastIndexOf( "\\" )+1,string.length()-6);
-             System.out.println(fileName);
+             String fileName = file.getName();
+             System.out.println(fileName.substring(0, fileName.lastIndexOf(".")));
              CommandLn.setPath(path);
-             CommandLn.setFile(fileName);
+             CommandLn.setFile(fileName.substring(0, fileName.lastIndexOf(".")));
         }
 
     }//GEN-LAST:event_jButton3MouseClicked
