@@ -3,6 +3,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
@@ -60,6 +61,53 @@ public class Main {
 	        
 	        packet = new DatagramPacket(buf, buf.length, address, 6666);
 	        socket.send(packet);
+	        
+	        // only wait for reply if the user specified how long
+	        // we don't want to get them stuck forever
+	     	if(waitTime > 0)
+	     	{
+	     		socket.setSoTimeout(waitTime);
+	     		
+	     		// There are three possible replies, in order:
+	     		// Command parse status, robot status, reply (not always)
+	     		// So we wait three times
+	     		
+	     		try
+	     		{
+	     			for(int i=0; i<3; ++i)
+	     			{
+	     				//FIXME This is too late
+	     				// The command status slips through
+	     				// We may try and disregard this,
+	     				// it'll catch the answer anyway
+	     				
+	     				// receive length
+	     				packet = new DatagramPacket(len, len.length);
+	     				socket.receive(packet);
+
+	     				length = (packet.getData()[0] << 3) +
+	     						(packet.getData()[1] << 2) +
+	     						(packet.getData()[2] << 1) +
+	     						packet.getData()[3];
+
+	     				buf = new byte[length];
+
+	     				// receive packet
+	     				packet = new DatagramPacket(buf, buf.length);
+	     				socket.receive(packet);
+
+	     				System.out.println(new String(packet.getData()));
+	     				//TODO Don't print OK messages to avoid clutter
+
+	     				//TODO Recognize if the message will expect a reply
+	     				// and skip the third wait if it does not
+	     			}
+	     		}
+	     		catch(SocketTimeoutException e)
+	     		{
+	     			System.out.println("Timed out");
+	     		}
+	     	}
 	        
 	        socket.close();
 	        

@@ -80,7 +80,6 @@ public class SocketConnection implements Runnable
 			{
 				notify();
 			}
-			System.out.println("got here!");
 		}
 	}
 	

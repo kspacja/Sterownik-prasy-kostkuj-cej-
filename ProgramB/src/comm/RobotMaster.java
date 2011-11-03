@@ -45,7 +45,6 @@ public class RobotMaster implements Runnable
 			{
 				return; // Kończę wątek
 			}
-			System.out.println("Interp begins");
 			
 			// Parsuj otrzymaną wiadomość
 			while(ss.isAvailable())
@@ -78,7 +77,7 @@ public class RobotMaster implements Runnable
 				{
 					bt.send(toRobot.removeFirst());
 					
-					Thread.sleep(100); //TODO Przetestować, czy dobrze działa
+					Thread.sleep(100); //TODO Przetestować, czy dobry timeout
 
 					byte[] ans = bt.receive();
 					boolean mustAns = expectAns.removeFirst();
@@ -311,7 +310,8 @@ public class RobotMaster implements Runnable
 	public static void main(String[] args) throws SocketException, IOException
 	{
 		RobotMaster master = new RobotMaster(new SocketConnection(6666), new BluetoothConnection(
-				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
+//				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
+				"btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false"));
 		
 		System.in.read();
 	}
