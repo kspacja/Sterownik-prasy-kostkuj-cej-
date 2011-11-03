@@ -1,28 +1,155 @@
 package comm;
 
+import java.io.IOException;
+import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.LinkedList;
 
-public class Parser
+
+public class RobotMaster implements Runnable
 {
-	private static class Constants
+	private Thread robotTalker; // Wątek, który komunikuje się z robotem
+	private SocketConnection ss;
+	private BluetoothConnection bt;
+	
+	private LinkedList<byte[]> toRobot = new LinkedList<byte[]>();
+	// Informuje, że wiadomość na tej samej pozycji w toRobot MUSI otrzymać odpowiedź
+	private LinkedList<Boolean> expectAns = new LinkedList<Boolean>();
+	
+	// Cztery sensory, pierwszy bajt drugiej tablicy to typ, a drugi to tryb
+	private byte[][] sensorData = new byte[4][2];
+	
+	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth)
 	{
-		public static final byte MOTOR_A = 0;
-		public static final byte MOTOR_B = 1;
-		public static final byte MOTOR_C = 2;
-		public static final byte MOTOR_ALL = (byte)0xFF;
-
-		public static final byte SENSOR_TOUCH = 1;
-		
-		public static final byte SMODE_RAW = 0;
-		public static final byte SMODE_BOOL = 0x20;
-		public static final byte SMODE_SWITCH = 0x40;
-		public static final byte SMODE_PERIODIC = 0x60;
-		public static final byte SMODE_PERCENT = (byte)0x80;
+		ss = socket;
+		bt = bluetooth;
+		robotTalker = new Thread(this);
+		robotTalker.start();
 	}
+	
+	@Override
+	public void run()
+	{
+		while(true)
+		{
+			// Czekaj na żądanie z socketu
+			try
+			{
+				synchronized(ss)
+				{
+					ss.wait();
+				}
+			}
+			catch(InterruptedException e)
+			{
+				return; // Kończę wątek
+			}
+			System.out.println("Interp begins");
+			
+			// Parsuj otrzymaną wiadomość
+			while(ss.isAvailable())
+				try
+				{
+					try
+					{
+						parseCommand(ss.receiveString());
+						ss.reply("OK Command");
+					}
+					catch(ParserException e)
+					{
+						// Wyślij zwrotną informację, że komenda była niezrozumiała
+						ss.reply("Command Error: " + e.getMessage());
+						e.printStackTrace();
+					}
+					
+				}
+				catch(IOException e)
+				{
+					// W tym momencie niewiele da się zrobić
+					System.err.println("!? Failed to send an UDP reply packet");
+					e.printStackTrace();
+				}
+			
+			// Teraz w kolejce do robota są komendy
+			while(!toRobot.isEmpty())
+			{
+				try
+				{
+					bt.send(toRobot.removeFirst());
+					
+					Thread.sleep(100); //TODO Przetestować, czy dobrze działa
 
-	// Zwraca tablicę bajtów, które będzie mogła być wysłana do robota
-	public static byte[] parse(String request) throws ParserException
+					byte[] ans = bt.receive();
+					boolean mustAns = expectAns.removeFirst();
+
+					if(ans != null)
+						if(ans[2] == 0)
+							if(mustAns)
+								;//TODO parseReply
+							else
+								ss.reply("OK Robot");
+						else
+							ss.reply("Robot Error: " + ans[2]);
+					else if(mustAns)
+						ss.reply("Robot does not respond");
+				}
+				catch(IOException e)
+				{
+					System.err.println("!! Failed to communicate with the robot");
+					e.printStackTrace();
+				}
+				catch(InterruptedException e)
+				{
+					return; // Kończę wątek
+				}
+			}
+		}
+	}
+	
+	private void send(byte[] msg, boolean ans)
+	{
+		toRobot.add(msg);
+		expectAns.add(ans);
+	}
+	
+	private void motor(byte which, byte power, byte mode, byte reg, byte tratio,
+		byte rstate, short tachoLimit)
+	{
+		ByteBuffer bb = ByteBuffer.wrap(new byte[13]);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		
+		bb.put((byte)0);
+		bb.put((byte)4);
+		bb.put(which);
+		bb.put(power);
+		bb.put(mode);
+		bb.put(reg);
+		bb.put(tratio);
+		bb.put(rstate);
+		bb.putShort(tachoLimit);
+		
+		send(bb.array(), false);
+	}
+	
+	private void setSensor(byte which, byte type, byte mode)
+	{
+		sensorData[which][0] = type;
+		sensorData[which][1] = mode;
+		send(new byte[]{0, 5, which, type, mode}, false);
+	}
+	
+	private void getSensor(byte which)
+	{
+		send(new byte[]{0, 7, which}, true);
+	}
+	
+	private void resetSensorScaledValue(byte which)
+	{
+		send(new byte[]{0, 8, which}, false);
+	}
+	
+	private void parseCommand(String request) throws ParserException
 	{
 		String[] args = request.split(" ");
 
@@ -48,7 +175,7 @@ public class Parser
 			// Tworzę zmienne dla wywołania setoutputstate
 			byte pow = 0;
 			byte powmod = 0; // 1 lub -1 lub 0 - zależne od direction
-			int tacholimit = 0;
+			short tacholimit = 0;
 
 			for(int i=2; i<args.length; ++i)
 			{
@@ -75,9 +202,9 @@ public class Parser
 							throw new ParserException("Power must be in range [0,100]");
 					}
 					else if(arg[0].equalsIgnoreCase("degrees"))
-						tacholimit = Integer.parseInt(arg[1]);
+						tacholimit = (short)Integer.parseInt(arg[1]);
 					else if(arg[0].equalsIgnoreCase("rotations"))
-						tacholimit = 360 * Integer.parseInt(arg[1]);
+						tacholimit = (short)(360 * Integer.parseInt(arg[1]));
 					else if(arg[0].equalsIgnoreCase("unlimited"))
 						tacholimit = 0;
 					else
@@ -91,17 +218,10 @@ public class Parser
 				}
 			}
 
-			bb.put((byte)0);
-			bb.put((byte)4);
-			bb.put(abc);
-			bb.put((byte)(pow * powmod));
-			bb.put((byte)3); // MOTORON + BRAKE
-			bb.put((byte)0);
-			bb.put((byte)0);
-			bb.put((byte)0x20); //TODO Teraz tylko running, potem dodać inne tryby
-			bb.putInt(tacholimit);
-
-			return bb.array();
+			motor(abc, (byte)(pow*powmod), (byte)3, (byte)0, (byte)0,
+				(byte)0x20, tacholimit);
+			// 3 - MOTORON + BRAKE
+			//TODO 0c20 - Teraz tylko running, potem dodać inne tryby
 		}
 		else if(args[0].equalsIgnoreCase("get-sensor"))
 		{
@@ -110,7 +230,7 @@ public class Parser
 				byte sen = Byte.parseByte(args[1]);
 				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [0-3]");
-				return new byte[] {0, 7, sen};
+				getSensor(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -124,7 +244,8 @@ public class Parser
 				byte sen = Byte.parseByte(args[1]);
 				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [0-3]");
-				return new byte[] {0, 8, sen};
+				
+				resetSensorScaledValue(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -175,7 +296,7 @@ public class Parser
 							"should be 'type', 'mode'");
 				}
 				
-				return new byte[] {0, 5, sen, type, mode};
+				setSensor(sen, type, mode);
 			}
 			catch(NumberFormatException e)
 			{
@@ -184,5 +305,14 @@ public class Parser
 		}
 		else
 			throw new ParserException("Unknown command: "+args[0]);
+	}
+	
+	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
+	public static void main(String[] args) throws SocketException, IOException
+	{
+		RobotMaster master = new RobotMaster(new SocketConnection(6666), new BluetoothConnection(
+				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
+		
+		System.in.read();
 	}
 }

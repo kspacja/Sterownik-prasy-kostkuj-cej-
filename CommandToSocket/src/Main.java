@@ -30,7 +30,6 @@ public class Main {
 			}
 			else commandList.append(args[i] + " "); //add command
 		}
-		
 		if (commandList.length() < 1) { //if there is no command exit app
 			System.err.println("No command to send");
 			System.exit(0);

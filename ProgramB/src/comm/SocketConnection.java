@@ -4,18 +4,28 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.SocketAddress;
 import java.net.SocketException;
+import java.util.LinkedList;
 
-public class SocketServer implements Runnable
+public class SocketConnection implements Runnable
 {
 	private DatagramSocket socket;
+	// Wątek, który nasłuchuje wiadomości z socketa i umieszcza je w kolejce
+	private Thread socketReader;
+	// Adres zwrotny, czyli ostatni adres z którego przyszedł jakiś pakiet
+	private SocketAddress returnAddress = null;
 	private byte[] lenbuf = new byte[4];
 	
-	public SocketServer(int port) throws SocketException
+	private LinkedList<byte[]> fromSocket = new LinkedList<byte[]>();
+	
+	public SocketConnection(int port) throws SocketException
 	{
 		socket = new DatagramSocket(port);
+		socketReader = new Thread(this);
+		socketReader.start();
 	}
-
+	
 	@Override
 	public void run()
 	{
@@ -55,44 +65,58 @@ public class SocketServer implements Runnable
 				continue;
 			}
 			
-			// Przetwarzanie i ewentualna odpowiedź
-			byte[] response = processRequest(fromBytearray(packet.getData()));
-			
-			if(response != null)
+			synchronized(this)
 			{
-				try
-				{
-					DatagramPacket reply = new DatagramPacket(response, response.length,
-						packet.getSocketAddress());
-					socket.send(reply);
-				}
-				catch(IOException e)
-				{
-					System.err.println("!! Sending a packet failed");
-					e.printStackTrace();
-				}
+				fromSocket.add(packet.getData());
+				returnAddress = packet.getSocketAddress();
 			}
+			
+			System.out.println("Received a packet: " + fromBytearray(packet.getData()));
 			
 			// Zeruję bufor długości
 			java.util.Arrays.fill(lenbuf, (byte)0);
+			// Pobudza wątek czekający na żądania z socketu
+			synchronized(this)
+			{
+				notify();
+			}
+			System.out.println("got here!");
 		}
+	}
+	
+	public boolean isAvailable()
+	{
+		return !fromSocket.isEmpty();
+	}
+	
+	public synchronized byte[] receive()
+	{
+		return fromSocket.removeFirst();
+	}
+	
+	public synchronized String receiveString()
+	{
+		return fromBytearray(fromSocket.removeFirst());
+	}
+	
+	public synchronized void reply(byte[] msg) throws IOException
+	{
+		if(returnAddress == null)
+			throw new IOException("There's no return address to reply to");
+
+		DatagramPacket ts = new DatagramPacket(msg, msg.length, returnAddress);
+		socket.send(ts);
+	}
+	
+	public synchronized void reply(String msg) throws IOException
+	{
+		reply(toBytearray(msg));
 	}
 	
 	@Override
 	public void finalize()
 	{
 		socket.close();
-	}
-	
-	/**
-	 * Metoda odpowiedzialna za reagowanie na żądania otrzymane przez socket
-	 * @param reqstring pełny tekst żądania
-	 * @return wiadomość zwrotna (null, jeśli jej nie ma)
-	 */
-	private byte[] processRequest(String req)
-	{
-		System.out.println(req);
-		return null;
 	}
 	
 	private static byte[] toBytearray(String str)
@@ -127,11 +151,5 @@ public class SocketServer implements Runnable
 		}
 		
 		return res;
-	}
-	
-	public static void main(String[] args) throws SocketException
-	{
-		SocketServer s = new SocketServer(6666);
-		s.run();
 	}
 }

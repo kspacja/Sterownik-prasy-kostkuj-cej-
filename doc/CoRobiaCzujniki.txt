@@ -1,0 +1,76 @@
+Ogólna obsługa:
+	Najpierw należy ustawić typ i tryb sensora za pomocą komendy SETINPUTMODE (Appendix 2..., str. 7)
+	Co oznaczają poszczególne typy i tryby, jest napisane w mindstorms_firmware_manual, str. 46-47
+
+	Z sensora czyta się za pomocą komendy GETINPUTVALUES (Appendix 2..., str. 8)
+	Wśród zwracanych wartości interesuje nas:
+		Status Byte - powinien być 0, inaczej błąd komunikacji,
+		Valid? - powinien być 1, inaczej błąd sensora
+		Normalized A/D value - to jest zwracana wartość, tylko w RAWMODE
+		Scaled value - to jest zwracana wartość, poza RAWMODE
+
+Dla każdego sensora piszę, dla jakich typów i trybów mają sens i co zwracają.
+Oczywiście można zrobić np. sensor dźwięku w trybie BOOLEAN, żeby rozróżniał tylko głośny lub cichy,
+ale ja wypisuję tylko najbardziej oczywiste przypadki
+
+Touch sensor:
+	type: SWITCH
+	mode: BOOLEANMODE lub TRANSACTIONCNTMODE lub PERIODCOUNTERMODE
+
+	Myślę, że działanie tego sensora będzie oczywiste po przeczytaniu opisu trybów.
+
+Sound sensor:
+	type: SOUND_DB lub SOUND_DBA
+	mode: RAWMODE lub PCTFULLSCALEMODE
+
+	Im dźwięk głośniejszy, tym większa wartość. Tryb DB ma mniejszą skalę (osiąga max przy cichszych dźwiękach)
+	niż DBA.
+
+Light sensor:
+	type: LIGHT_ACTIVE lub LIGHT_INACTIVE
+	mode: RAWMODE lub PCTFULLSCALEMODE
+
+	Im większa wartość, tym jaśniej, ale te tryby mierzą różne rzeczy. INACTIVE mierzy jasność światła w otoczeniu,
+	podczas gdy ACTIVE mierzy odbite światło z latarki na czujniku.
+
+	Uwaga: ustawienie ACTIVE powoduje włączenie latarki, aby ją wyłączyć trzeba ustawić inny tryb. Kolor latarki
+	jest czerwony.
+
+Color sensor:
+	Ten sensor ma dwa zupełnie różne sposoby działania.
+
+	Jako czujnik koloru (of course):
+		type: COLORFULL
+		mode: RAWMODE
+
+		Zwracana wartość to jedna ze stałych, opisanych w ColorSensorConstants.
+
+	Jako czujnik światła:
+		type: COLORRED lub COLORGREEN lub COLORBLUE lub COLORONE
+		mode: RAWMODE lub PCTFULLSCALEMODE
+
+		Działa jak sensor światła. W trybie COLOR{nazwa koloru} mierzy światło odbite,
+		w COLORONE mierzy światło z otoczenia.
+
+Ultrasonic sensor:
+	Czarna magia. Ten sensor działa zupełnie inaczej niż poprzednie.
+
+	tryb: LOWSPEED_9V
+	mode: RAWMODE
+
+	UWAGA: Po ustawieniu tego trybu, wszelkie próby wysłania do sensora jednego z komunikatów
+	opisanych poniżej będą zawsze zwracały wyjątek o kodzie 0xDC. Należy odczekać parędziesiąt sekund przed
+	próbą komunikacji.
+
+	Aby odczytać wartości, nie stosuje się metody GETINPUTVALUES!
+	Zamiast tego, metody LSWRITE, LSREAD, LSGETSTATUS (Appendix 2..., str. 10,
+	kody wyjątków w mindstorms_firmware_manual)
+
+	Na początku należy wysłać pakiet takiej postaci (podaję kolejne bajty):
+	{0, 0x0F, 1, 2, 1, 0x02, 0x42, 0, 0, 0, 0} (to jest LSWRITE)
+
+	Potem należy wysyłać LSGETSTATUS, aż liczba bajtów do odczytania będzie wynosiła 1
+
+	Potem należy wysłać LSREAD, bajt 4 będzie zawierał interesującą nas wartość.
+
+	Im mniej, tym bliżej jest rzecz przed czujnikiem
