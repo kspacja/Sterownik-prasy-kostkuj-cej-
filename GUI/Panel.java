@@ -13,9 +13,7 @@ public class Panel extends javax.swing.JFrame {
 
     /** Creates new form Panel */
     public Panel() {
-        initComponents();
-        jTextField1.setText("");
-        jTextField2.setText("");
+        initComponents();       
 
     }
 
@@ -580,6 +578,8 @@ public class Panel extends javax.swing.JFrame {
 
         tryb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
 
+        jTextField1.setText("0");
+
         jButton1.setText("Wykonaj");
         jButton1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -710,6 +710,8 @@ public class Panel extends javax.swing.JFrame {
 
         tryb1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
 
+        jTextField2.setText("0");
+
         jButton2.setText("Wykonaj");
         jButton2.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -836,6 +838,8 @@ public class Panel extends javax.swing.JFrame {
         jLabel13.setText("Obrót o");
 
         tryb4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+
+        jTextField5.setText("0");
 
         jButton5.setText("Wykonaj");
         jButton5.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -1011,7 +1015,8 @@ public class Panel extends javax.swing.JFrame {
             y = Integer.parseInt(jTextField1.getText());
         } catch(Exception e){
             System.out.println("Zły typ danych");
-        }        
+        }
+        if (y>0)
         Sterowanie.makeObrot(x, y, z, q);
 }//GEN-LAST:event_jButton1MouseClicked
 
@@ -1287,6 +1292,7 @@ public class Panel extends javax.swing.JFrame {
         } catch(Exception e){
             System.out.println("Zły typ danych");
         }
+        if(y>0)
         Sterowanie.makeObrot(x, y, z, q);
 }//GEN-LAST:event_jButton2MouseClicked
 
@@ -1303,6 +1309,7 @@ public class Panel extends javax.swing.JFrame {
         } catch(Exception e){
             System.out.println("Zły typ danych");
         }
+        if (y>0)
         Sterowanie.makeObrot(x, y, z, q);
     }//GEN-LAST:event_jButton5MouseClicked
 
