@@ -22,7 +22,7 @@ public static String fileName="";
         fileName = f;
     }
 
-    public static String createCommand(String silnik, int stopnie, int obroty, int czas, int moc){
+    public static String createCommand(String silnik, int stopnie, int obroty, int unlimited, int moc){
         String command ="";
         if (stopnie!=0 & moc>0){
         command = "java "+fileName+" motor "+silnik+" direction=forward"+" power=" +Integer.toString(moc)+" degrees="+Integer.toString(stopnie);
@@ -35,13 +35,22 @@ public static String fileName="";
         }
         if (obroty!=0 & moc<0){
         command = "java "+fileName+" motor "+silnik+" direction=backwards"+" power=" +Integer.toString(moc*(-1))+" rotations="+Integer.toString(obroty);
-        }        
+        }
+        if (unlimited==1){
+        command = "java "+fileName+" motor "+silnik+" direction=forward"+" power=" +Integer.toString(moc)+" unlimited";
+        }
+        if (unlimited==-1){
+        command = "java "+fileName+" motor "+silnik+" direction=backwards"+" power=" +Integer.toString(moc)+" unlimited";
+        }
+        if (moc==0){
+        command = "java "+fileName+" motor "+silnik+" direction=backwards"+" power=" +Integer.toString(moc*(-1))+" rotations="+Integer.toString(obroty);
+        }
         return(command);
 
     }
 
     
-    public static void CommandLn(String silnik, int stopnie, int obroty, int czas, int moc){
+    public static void CommandLn(String silnik, int stopnie, int obroty, int unlimited, int moc){
     try
     {
         Runtime rt = Runtime.getRuntime();
@@ -53,14 +62,20 @@ public static String fileName="";
         
         //Decyzja o trybie
         if(stopnie!=0){
-            commandToSend = createCommand(silnik, stopnie, obroty, czas, moc);
+            commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
         }
         else if(obroty!=0){
-            commandToSend = createCommand(silnik, stopnie, obroty, czas, moc);
+            commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
         }
-        else if(czas!=0){
-            commandToSend = createCommand(silnik, stopnie, obroty, czas, moc);
+        //else if(czas!=0){
+        //    commandToSend = createCommand(silnik, stopnie, obroty, czas, moc);
+        else if(unlimited==1){
+            commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
+            }
+        else if(unlimited==-1){
+            commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
         }
+        else commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
         
         //commandToSend = "dir\n" + "exit\n";
 

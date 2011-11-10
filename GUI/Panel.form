@@ -896,10 +896,9 @@
         <Component class="javax.swing.JComboBox" name="tryb">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="2">
                 <StringItem index="0" value="k&#x105;t"/>
                 <StringItem index="1" value="liczb&#x119; obrot&#xf3;w"/>
-                <StringItem index="2" value="czas"/>
               </StringArray>
             </Property>
           </Properties>
@@ -1090,10 +1089,9 @@
         <Component class="javax.swing.JComboBox" name="tryb1">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="2">
                 <StringItem index="0" value="k&#x105;t"/>
                 <StringItem index="1" value="liczb&#x119; obrot&#xf3;w"/>
-                <StringItem index="2" value="czas"/>
               </StringArray>
             </Property>
           </Properties>
@@ -1277,10 +1275,9 @@
         <Component class="javax.swing.JComboBox" name="tryb4">
           <Properties>
             <Property name="model" type="javax.swing.ComboBoxModel" editor="org.netbeans.modules.form.editors2.ComboBoxModelEditor">
-              <StringArray count="3">
+              <StringArray count="2">
                 <StringItem index="0" value="k&#x105;t"/>
                 <StringItem index="1" value="liczb&#x119; obrot&#xf3;w"/>
-                <StringItem index="2" value="czas"/>
               </StringArray>
             </Property>
           </Properties>

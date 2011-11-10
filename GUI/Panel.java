@@ -576,7 +576,7 @@ public class Panel extends javax.swing.JFrame {
 
         jLabel2.setText("Obrót o");
 
-        tryb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+        tryb.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów" }));
 
         jTextField1.setText("0");
 
@@ -708,7 +708,7 @@ public class Panel extends javax.swing.JFrame {
 
         jLabel4.setText("Obrót o");
 
-        tryb1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+        tryb1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów" }));
 
         jTextField2.setText("0");
 
@@ -837,7 +837,7 @@ public class Panel extends javax.swing.JFrame {
 
         jLabel13.setText("Obrót o");
 
-        tryb4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów", "czas" }));
+        tryb4.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "kąt", "liczbę obrotów" }));
 
         jTextField5.setText("0");
 
@@ -1047,6 +1047,7 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
         int x = 2;
         int q = mocSilnika.getValue();
+        Sterowanie.engineStop(x);
         Sterowanie.leftTurn(x,q);
         rightButton.setSelected(false);
         }
@@ -1056,12 +1057,15 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
         int x = 2;
         int q = mocSilnika.getValue();
+        Sterowanie.engineStop(x);
         Sterowanie.rightTurn(x,q);
         leftButton.setSelected(false);
         }
     }//GEN-LAST:event_rightButtonItemStateChanged
 
     private void stopButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButtonMouseClicked
+        leftButton.setSelected(false);
+        rightButton.setSelected(false);
         Sterowanie.engineStop(2);
     }//GEN-LAST:event_stopButtonMouseClicked
 
@@ -1243,6 +1247,7 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
             int x = 1;
             int q = mocSilnika1.getValue();
+            Sterowanie.engineStop(x);
             Sterowanie.rightTurn(x,q);
             leftButton1.setSelected(false);
         }
@@ -1256,12 +1261,15 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
             int x = 1;
             int q = mocSilnika1.getValue();
+            Sterowanie.engineStop(x);
             Sterowanie.leftTurn(x,q);
             rightButton1.setSelected(false);
         }
 }//GEN-LAST:event_leftButton1ItemStateChanged
 
     private void stopButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButton1MouseClicked
+        rightButton1.setSelected(false);
+        leftButton1.setSelected(false);
         Sterowanie.engineStop(1);
 }//GEN-LAST:event_stopButton1MouseClicked
 
@@ -1329,6 +1337,8 @@ public class Panel extends javax.swing.JFrame {
     }//GEN-LAST:event_moc4KeyTyped
 
     private void stopButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_stopButton4MouseClicked
+        rightButton4.setSelected(false);
+        leftButton4.setSelected(false);
         Sterowanie.engineStop(3);
     }//GEN-LAST:event_stopButton4MouseClicked
 
@@ -1336,6 +1346,7 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
         int x = 3;
         int q = mocSilnika4.getValue();
+        Sterowanie.engineStop(x);
         Sterowanie.leftTurn(x,q);
         rightButton4.setSelected(false);
         }
@@ -1349,6 +1360,7 @@ public class Panel extends javax.swing.JFrame {
         if (evt.getStateChange() == 1){
         int x = 3;
         int q = mocSilnika4.getValue();
+        Sterowanie.engineStop(x);
         Sterowanie.rightTurn(x,q);
         leftButton4.setSelected(false);
         }
