@@ -40,7 +40,7 @@ public class BluetoothConnection
 	
 	public void send(byte[] msg) throws IOException
 	{
-		System.out.println("Imma sending an array: " + Arrays.toString(msg));
+		System.out.println("sent to robot: " + Arrays.toString(msg));
 		ostream.write(msg.length);
 		ostream.write(0);
 		ostream.write(msg);
@@ -67,6 +67,8 @@ public class BluetoothConnection
 			res = new byte[lenbuf[0]];
 			istream.read(res);
 		}
+		
+		System.out.println("got from robot: " + Arrays.toString(res));
 		
 		return res;
 	}

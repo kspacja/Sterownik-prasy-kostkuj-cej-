@@ -25,5 +25,9 @@ public class Constants
 	public static final byte SMODE_PERIODIC = 0x60;
 	public static final byte SMODE_PERCENT = (byte)0x80;
 	
+	public static final byte CMD_GETINPUTVALUES = 0x07;
+	public static final byte CMD_LSREAD = 0x10;
+	public static final byte CMD_LSGETSTATUS = 0x0E;
+	
 	private Constants(){}
 }

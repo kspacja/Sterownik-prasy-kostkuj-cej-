@@ -74,7 +74,7 @@ public class Main {
 	     		
 	     		try
 	     		{
-	     			for(int i=0; i<3; ++i)
+	     			for(int i=0; i<2; ++i)//FIXME for now two to let the command slip through
 	     			{
 	     				//FIXME This is too late
 	     				// The command status slips through
