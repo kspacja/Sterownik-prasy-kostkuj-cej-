@@ -47,12 +47,13 @@ public class RobotMaster implements Runnable
 			
 			// Parsuj otrzymaną wiadomość
 			while(ss.isAvailable())
+			{
 				try
 				{
 					try
 					{
 						parseCommand(ss.receiveString());
-						ss.reply("OK Command");
+						//ss.reply("OK Command");
 					}
 					catch(ParserException e)
 					{
@@ -68,48 +69,49 @@ public class RobotMaster implements Runnable
 					System.err.println("!? Failed to send an UDP reply packet");
 					e.printStackTrace();
 				}
-			
-			// Teraz w kolejce do robota są komendy
-			while(!toRobot.isEmpty())
-			{
-				try
+				
+				// Teraz w kolejce do robota są komendy
+				while(!toRobot.isEmpty())
 				{
-					bt.send(toRobot.removeFirst());
-					
-					Thread.sleep(150); //TODO Przetestować, czy dobry timeout
-
-					byte[] ans = bt.receive();
-					boolean mustAns = expectAns.removeFirst();
-					
-
 					try
 					{
-						if(ans != null)
-							if(ans[2] == 0)
-								if(mustAns)
-									ss.reply(parseReply(ans));
+						bt.send(toRobot.removeFirst());
+						
+						Thread.sleep(200); //TODO Przetestować, czy dobry timeout
+
+						byte[] ans = bt.receive();
+						boolean mustAns = expectAns.removeFirst();
+						
+
+						try
+						{
+							if(ans != null)
+								if(ans[2] == 0)
+									if(mustAns)
+										ss.reply(parseReply(ans));
+									else
+										ss.reply("OK Robot");
 								else
-									ss.reply("OK Robot");
-							else
-								ss.reply("Robot Error: " + ans[2]);
-						else if(mustAns)
-							ss.reply("Robot does not respond");
+									ss.reply("Robot Error: " + ans[2]);
+							else if(mustAns)
+								ss.reply("Robot does not respond");
+						}
+						catch(IOException e)
+						{
+							// W tym momencie niewiele da się zrobić
+							System.err.println("!? Failed to send an UDP reply packet");
+							e.printStackTrace();
+						}
 					}
 					catch(IOException e)
 					{
-						// W tym momencie niewiele da się zrobić
-						System.err.println("!? Failed to send an UDP reply packet");
+						System.err.println("!! Failed to communicate with the robot");
 						e.printStackTrace();
 					}
-				}
-				catch(IOException e)
-				{
-					System.err.println("!! Failed to communicate with the robot");
-					e.printStackTrace();
-				}
-				catch(InterruptedException e)
-				{
-					return; // Kończę wątek
+					catch(InterruptedException e)
+					{
+						return; // Kończę wątek
+					}
 				}
 			}
 		}

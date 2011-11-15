@@ -6,6 +6,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import java.net.SocketException;
+import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
 public class SocketConnection implements Runnable
@@ -102,13 +103,23 @@ public class SocketConnection implements Runnable
 	{
 		if(returnAddress == null)
 			throw new IOException("There's no return address to reply to");
+		
+		// Wysyłam długość pakietu
+		byte[] len = new byte[4];
+		ByteBuffer wrapper = ByteBuffer.wrap(len);
+		wrapper.putInt(msg.length);
 
-		DatagramPacket ts = new DatagramPacket(msg, msg.length, returnAddress);
+		DatagramPacket ts = new DatagramPacket(len, len.length, returnAddress);
+		socket.send(ts);
+		
+		// I właściwy pakiet
+		ts = new DatagramPacket(msg, msg.length, returnAddress);
 		socket.send(ts);
 	}
 	
 	public synchronized void reply(String msg) throws IOException
 	{
+		System.out.println("Packet sent: " + msg);
 		reply(toBytearray(msg));
 	}
 	
