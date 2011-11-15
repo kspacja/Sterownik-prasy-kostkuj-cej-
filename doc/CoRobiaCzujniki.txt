@@ -67,7 +67,7 @@ Ultrasonic sensor:
 	kody wyjątków w mindstorms_firmware_manual)
 
 	Na początku należy wysłać pakiet takiej postaci (podaję kolejne bajty):
-	{0, 0x0F, 1, 2, 1, 0x02, 0x42, 0, 0, 0, 0} (to jest LSWRITE)
+	{0, 0x0F, nr_portu_sensoru, 2, 1, 0x02, 0x42, 0, 0, 0, 0} (to jest LSWRITE)
 
 	Potem należy wysyłać LSGETSTATUS, aż liczba bajtów do odczytania będzie wynosiła 1
 

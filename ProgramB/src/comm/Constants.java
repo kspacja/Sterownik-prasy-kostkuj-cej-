@@ -7,10 +7,10 @@ public class Constants
 	public static final byte MOTOR_C = 2;
 	public static final byte MOTOR_ALL = (byte)0xFF;
 
-	public static final byte SENSOR_1 = 0;
-	public static final byte SENSOR_2 = 1;
-	public static final byte SENSOR_3 = 2;
-	public static final byte SENSOR_4 = 3;
+//	public static final byte SENSOR_1 = 0;
+//	public static final byte SENSOR_2 = 1;
+//	public static final byte SENSOR_3 = 2;
+//	public static final byte SENSOR_4 = 3;
 	
 	public static final byte SENSOR_TOUCH = 1;
 	public static final byte SENSOR_LIGHT_ACTIVE = 5;
@@ -18,6 +18,11 @@ public class Constants
 	public static final byte SENSOR_SOUND_DB = 7;
 	public static final byte SENSOR_SOUND_DBA = 8;
 	public static final byte SENSOR_LOWSPEED_9V = 0xB;
+	public static final byte SENSOR_COLOR_FULL = 0xD;
+	public static final byte SENSOR_COLOR_RED = 0xE;
+	public static final byte SENSOR_COLOR_GREEN = 0xF;
+	public static final byte SENSOR_COLOR_BLUE = 0x10;
+	public static final byte SENSOR_COLOR_NONE = 0x11;
 	
 	public static final byte SMODE_RAW = 0;
 	public static final byte SMODE_BOOL = 0x20;
@@ -28,6 +33,13 @@ public class Constants
 	public static final byte CMD_GETINPUTVALUES = 0x07;
 	public static final byte CMD_LSREAD = 0x10;
 	public static final byte CMD_LSGETSTATUS = 0x0E;
+	
+	public static final byte COLOR_BLACK = 1;
+	public static final byte COLOR_BLUE = 2;
+	public static final byte COLOR_GREEN = 3;
+	public static final byte COLOR_YELLOW = 4;
+	public static final byte COLOR_RED = 5;
+	public static final byte COLOR_WHITE = 6;
 	
 	private Constants(){}
 }

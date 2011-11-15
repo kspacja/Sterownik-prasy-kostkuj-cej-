@@ -105,7 +105,7 @@ public class Main {
 	     		}
 	     		catch(SocketTimeoutException e)
 	     		{
-	     			System.out.println("Timed out");
+	     			//System.out.println("Timed out");
 	     		}
 	     	}
 	        
