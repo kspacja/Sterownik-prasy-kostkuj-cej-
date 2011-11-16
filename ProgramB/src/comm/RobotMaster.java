@@ -18,13 +18,20 @@ public class RobotMaster implements Runnable
 	
 	// Cztery sensory, pierwszy bajt drugiej tablicy to typ, a drugi to tryb
 	private byte[][] sensorData = new byte[4][2];
+	private int timeout;
 	
-	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth)
+	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth, int timeout)
 	{
 		ss = socket;
 		bt = bluetooth;
+		this.timeout = timeout;
 		robotTalker = new Thread(this);
 		robotTalker.start();
+	}
+	
+	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth)
+	{
+		this(socket, bluetooth, 200);
 	}
 	
 	@Override
@@ -48,6 +55,16 @@ public class RobotMaster implements Runnable
 			// Parsuj otrzymaną wiadomość
 			while(ss.isAvailable())
 			{
+				// Czyszczę input, żeby jakiś opóźniony pakiet nie zdesynchronizował wszystkiego
+				try
+				{
+					bt.clearInput();
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
+				
 				try
 				{
 					try
@@ -77,7 +94,7 @@ public class RobotMaster implements Runnable
 					{
 						bt.send(toRobot.removeFirst());
 						
-						Thread.sleep(200);
+						Thread.sleep(timeout);
 
 						byte[] ans = bt.receive();
 						boolean mustAns = expectAns.removeFirst();
@@ -273,9 +290,8 @@ public class RobotMaster implements Runnable
 				// Na razie (i być może w ogóle) obsługuję tylko jeden sensor, więc...
 				if(sensorData[sen][0] == Constants.SENSOR_LOWSPEED_9V)
 				{
-					//TODO Czy trzeba robić jakiś timeout?
 					lswrite(sen, new byte[]{0x2, 0x42}, (byte)1);
-//					Thread.sleep(200);
+					// Nie trzeba timeoutu
 					lsread(sen);
 				}
 				else
@@ -390,10 +406,10 @@ public class RobotMaster implements Runnable
 							mode = Constants.SMODE_RAW;
 						else if(arg[1].equalsIgnoreCase("bool"))
 							mode = Constants.SMODE_BOOL;
-						else if(arg[1].equalsIgnoreCase("switch"))
-							mode = Constants.SMODE_SWITCH;
-						else if(arg[1].equalsIgnoreCase("periodic"))
-							mode = Constants.SMODE_PERIODIC;
+						else if(arg[1].equalsIgnoreCase("pulse"))
+							mode = Constants.SMODE_PULSE;
+						else if(arg[1].equalsIgnoreCase("edge"))
+							mode = Constants.SMODE_EDGE;
 						else if(arg[1].equalsIgnoreCase("percent"))
 							mode = Constants.SMODE_PERCENT;
 						else
@@ -478,8 +494,8 @@ public class RobotMaster implements Runnable
 							break;
 
 						case Constants.SMODE_BOOL:
-						case Constants.SMODE_SWITCH:
-						case Constants.SMODE_PERIODIC:
+						case Constants.SMODE_PULSE:
+						case Constants.SMODE_EDGE:
 						case Constants.SMODE_PERCENT:
 							res = Integer.toString((reply[13] << 8) + reply[12]);
 					}
@@ -506,6 +522,6 @@ public class RobotMaster implements Runnable
 	{
 		RobotMaster master = new RobotMaster(new SocketConnection(6666), new BluetoothConnection(
 //				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
-				"btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false"));
+				"btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false"), 100);
 	}
 }

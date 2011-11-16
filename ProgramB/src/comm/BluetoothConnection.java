@@ -72,4 +72,11 @@ public class BluetoothConnection
 		
 		return res;
 	}
+	
+	// Pozbywa się wszystkich danych, które zalegają w buforze
+	public void clearInput() throws IOException
+	{
+		while(istream.available() > 0)
+			istream.read();
+	}
 }
