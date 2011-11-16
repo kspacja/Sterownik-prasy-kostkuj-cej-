@@ -77,7 +77,7 @@ public class RobotMaster implements Runnable
 					{
 						bt.send(toRobot.removeFirst());
 						
-						Thread.sleep(200); //TODO Przetestować, czy dobry timeout
+						Thread.sleep(200);
 
 						byte[] ans = bt.receive();
 						boolean mustAns = expectAns.removeFirst();
@@ -87,10 +87,12 @@ public class RobotMaster implements Runnable
 						{
 							if(ans != null)
 								if(ans[2] == 0)
+								{
 									if(mustAns)
 										ss.reply(parseReply(ans));
-									else
-										ss.reply("OK Robot");
+//									else
+//										ss.reply("OK Robot");
+								}
 								else
 									ss.reply("Robot Error: " + ans[2]);
 							else if(mustAns)
@@ -263,20 +265,21 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
 				// Jeśli sensor jest w tym trybie, to odczytuję za pomocą lsread
 				// Na razie (i być może w ogóle) obsługuję tylko jeden sensor, więc...
-				if(sensorData[sen][1] == Constants.SENSOR_LOWSPEED_9V)
+				if(sensorData[sen][0] == Constants.SENSOR_LOWSPEED_9V)
 				{
 					//TODO Czy trzeba robić jakiś timeout?
 					lswrite(sen, new byte[]{0x2, 0x42}, (byte)1);
+//					Thread.sleep(200);
 					lsread(sen);
 				}
 				else
-					getSensor((byte)(sen - 1));
+					getSensor(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -287,11 +290,11 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
-				resetSensorScaledValue((byte)(sen - 1));
+				resetSensorScaledValue(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -302,8 +305,8 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
 				byte type = 0;
@@ -345,7 +348,8 @@ public class RobotMaster implements Runnable
 						{
 							// Tu ignoruję inne opcje niż typ
 							// dla sensora koloru nie mają one sensu
-							setSensor(sen, Constants.SENSOR_COLOR_FULL, Constants.SMODE_RAW);
+							type = Constants.SENSOR_COLOR_FULL;
+							mode = Constants.SMODE_RAW;
 							break;
 						}
 						else if(arg[1].equalsIgnoreCase("color_as_light_red"))
@@ -372,7 +376,8 @@ public class RobotMaster implements Runnable
 						{
 							// Teraz trzeba się zachować całkowicie inaczej od reszty
 							// Nie uwzględniam reszty argumentów
-							setSensor(sen, Constants.SENSOR_LOWSPEED_9V, Constants.SMODE_RAW);
+							type = Constants.SENSOR_LOWSPEED_9V;
+							mode = Constants.SMODE_RAW;
 							break;
 						}
 						else
@@ -400,7 +405,7 @@ public class RobotMaster implements Runnable
 							"should be 'type', 'mode'");
 				}
 				
-				setSensor((byte)(sen - 1), type, mode);
+				setSensor(sen, type, mode);
 			}
 			catch(NumberFormatException e)
 			{
@@ -446,7 +451,7 @@ public class RobotMaster implements Runnable
 					{
 						case Constants.SMODE_RAW:
 							if(reply[6] == Constants.SENSOR_COLOR_FULL)
-								switch(reply[10]) //FIXME Czy 11?
+								switch(reply[12])
 								{
 									case Constants.COLOR_RED:
 										res = "RED";

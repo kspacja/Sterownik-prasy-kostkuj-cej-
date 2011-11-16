@@ -74,34 +74,40 @@ public class Main {
 	     		
 	     		try
 	     		{
-	     			for(int i=0; i<2; ++i)//FIXME for now two to let the command slip through
-	     			{
-	     				//FIXME This is too late
-	     				// The command status slips through
-	     				// We may try and disregard this,
-	     				// it'll catch the answer anyway
+	     			//for(int i=0; i<2; ++i)
+	     			//{
+	     			
+	     			
+	     			//FIXME This is too late
+	     			// The command status slips through
+	     			// We may try and disregard this,
+	     			// it'll catch the answer anyway
+	     			
+	     			// We'll just catch one answer, never mind the rest
+
+	     			// receive length
+	     			packet = new DatagramPacket(len, len.length);
+	     			socket.receive(packet);
+
+	     			length = (packet.getData()[0] << 3) +
+	     					(packet.getData()[1] << 2) +
+	     					(packet.getData()[2] << 1) +
+	     					packet.getData()[3];
+
+	     			buf = new byte[length];
+
+	     			// receive packet
+	     			packet = new DatagramPacket(buf, buf.length);
+	     			socket.receive(packet);
+
+	     			String toPrint = new String(packet.getData());
+	     			if(!toPrint.startsWith("OK"))
+	     				System.out.println(toPrint);
+
+	     			//TODO Recognize if the message will expect a reply
+	     			// and skip the third wait if it does not
 	     				
-	     				// receive length
-	     				packet = new DatagramPacket(len, len.length);
-	     				socket.receive(packet);
-
-	     				length = (packet.getData()[0] << 3) +
-	     						(packet.getData()[1] << 2) +
-	     						(packet.getData()[2] << 1) +
-	     						packet.getData()[3];
-
-	     				buf = new byte[length];
-
-	     				// receive packet
-	     				packet = new DatagramPacket(buf, buf.length);
-	     				socket.receive(packet);
-
-	     				System.out.println(new String(packet.getData()));
-	     				//TODO Don't print OK messages to avoid clutter
-
-	     				//TODO Recognize if the message will expect a reply
-	     				// and skip the third wait if it does not
-	     			}
+	     			//}
 	     		}
 	     		catch(SocketTimeoutException e)
 	     		{
