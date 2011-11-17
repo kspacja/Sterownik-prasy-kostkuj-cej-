@@ -30,8 +30,8 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 	//devices
 	private javax.swing.JPanel devicesPanel;
 	private javax.swing.JLabel devicesLabel;
-	private javax.swing.JList<String> devicesList;
-	private DefaultListModel<String> devicesListModel;
+	private javax.swing.JList devicesList;
+	private DefaultListModel devicesListModel;
 	private javax.swing.JScrollPane devicesListScrollPane;
 	private javax.swing.JButton searchForDevicesButton;
 	private javax.swing.JButton connectButton;
@@ -67,12 +67,12 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
 		devicesDiscovered = new ArrayList<RemoteDevice>();
-		devicesListModel = new DefaultListModel<String>();
+		devicesListModel = new DefaultListModel();
 
 		// create components
 		devicesPanel = new javax.swing.JPanel();
 		devicesListScrollPane = new javax.swing.JScrollPane();
-		devicesList = new javax.swing.JList<String>(devicesListModel);
+		devicesList = new javax.swing.JList(devicesListModel);
 		devicesLabel = new javax.swing.JLabel();
 		searchForDevicesButton = new javax.swing.JButton();
 		connectButton = new javax.swing.JButton();
