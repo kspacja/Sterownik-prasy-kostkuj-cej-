@@ -1,4 +1,4 @@
-motor
+﻿motor
 A|B|C
 direction=(forward|backwards|stop)
 power=(0-100) // power, brak jeśli stop
@@ -12,6 +12,8 @@ set-sensor
 type=(touch|color|light_ambient|light_reflected|sound|sound_db|sound_dba|color_as_light_red|color_as_light_green
 color_as_light_blue|color_as_light_ambient|ultrasonic)
 [mode=(raw|bool|switch|periodic|percent)]
+
+set-sensor 1 type=color
 
 reset-sensor-scaled
 1|2|3|4
