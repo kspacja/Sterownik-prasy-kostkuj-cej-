@@ -18,15 +18,28 @@ public class RobotMaster implements Runnable
 	
 	// Cztery sensory, pierwszy bajt drugiej tablicy to typ, a drugi to tryb
 	private byte[][] sensorData = new byte[4][2];
+	private int timeout;
 	
-	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth)
+	public RobotMaster(SocketConnection socket, int timeout)
 	{
 		ss = socket;
-		bt = bluetooth;
+		bt = null;
+		this.timeout = timeout;
 		robotTalker = new Thread(this);
 		robotTalker.start();
 	}
 	
+	public void changeBluetoothConnection(BluetoothConnection b)
+	{
+		if (bt!=null) bt.finalize();
+		bt = b;
+	}
+	
+	public RobotMaster(SocketConnection socket)
+	{
+		this(socket, 200);
+	}
+
 	@Override
 	public void run()
 	{
@@ -48,6 +61,16 @@ public class RobotMaster implements Runnable
 			// Parsuj otrzymaną wiadomość
 			while(ss.isAvailable())
 			{
+				// Czyszczę input, żeby jakiś opóźniony pakiet nie zdesynchronizował wszystkiego
+				try
+				{
+					bt.clearInput();
+				}
+				catch(IOException e)
+				{
+					e.printStackTrace();
+				}
+				
 				try
 				{
 					try
@@ -77,7 +100,7 @@ public class RobotMaster implements Runnable
 					{
 						bt.send(toRobot.removeFirst());
 						
-						Thread.sleep(200); //TODO Przetestować, czy dobry timeout
+						Thread.sleep(timeout);
 
 						byte[] ans = bt.receive();
 						boolean mustAns = expectAns.removeFirst();
@@ -87,10 +110,12 @@ public class RobotMaster implements Runnable
 						{
 							if(ans != null)
 								if(ans[2] == 0)
+								{
 									if(mustAns)
 										ss.reply(parseReply(ans));
-									else
-										ss.reply("OK Robot");
+//									else
+//										ss.reply("OK Robot");
+								}
 								else
 									ss.reply("Robot Error: " + ans[2]);
 							else if(mustAns)
@@ -102,11 +127,6 @@ public class RobotMaster implements Runnable
 							System.err.println("!? Failed to send an UDP reply packet");
 							e.printStackTrace();
 						}
-					}
-					catch(IOException e)
-					{
-						System.err.println("!! Failed to communicate with the robot");
-						e.printStackTrace();
 					}
 					catch(InterruptedException e)
 					{
@@ -263,20 +283,20 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
 				// Jeśli sensor jest w tym trybie, to odczytuję za pomocą lsread
 				// Na razie (i być może w ogóle) obsługuję tylko jeden sensor, więc...
-				if(sensorData[sen][1] == Constants.SENSOR_LOWSPEED_9V)
+				if(sensorData[sen][0] == Constants.SENSOR_LOWSPEED_9V)
 				{
-					//TODO Czy trzeba robić jakiś timeout?
 					lswrite(sen, new byte[]{0x2, 0x42}, (byte)1);
+					// Nie trzeba timeoutu
 					lsread(sen);
 				}
 				else
-					getSensor((byte)(sen - 1));
+					getSensor(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -287,11 +307,11 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
-				resetSensorScaledValue((byte)(sen - 1));
+				resetSensorScaledValue(sen);
 			}
 			catch(NumberFormatException e)
 			{
@@ -302,8 +322,8 @@ public class RobotMaster implements Runnable
 		{
 			try
 			{
-				byte sen = Byte.parseByte(args[1]);
-				if(sen < 1 || sen > 4)
+				byte sen = (byte)(Byte.parseByte(args[1]) - 1);
+				if(sen < 0 || sen > 3)
 					throw new ParserException("Sensor port must be in range [1-4]");
 				
 				byte type = 0;
@@ -345,7 +365,8 @@ public class RobotMaster implements Runnable
 						{
 							// Tu ignoruję inne opcje niż typ
 							// dla sensora koloru nie mają one sensu
-							setSensor(sen, Constants.SENSOR_COLOR_FULL, Constants.SMODE_RAW);
+							type = Constants.SENSOR_COLOR_FULL;
+							mode = Constants.SMODE_RAW;
 							break;
 						}
 						else if(arg[1].equalsIgnoreCase("color_as_light_red"))
@@ -372,7 +393,8 @@ public class RobotMaster implements Runnable
 						{
 							// Teraz trzeba się zachować całkowicie inaczej od reszty
 							// Nie uwzględniam reszty argumentów
-							setSensor(sen, Constants.SENSOR_LOWSPEED_9V, Constants.SMODE_RAW);
+							type = Constants.SENSOR_LOWSPEED_9V;
+							mode = Constants.SMODE_RAW;
 							break;
 						}
 						else
@@ -385,10 +407,10 @@ public class RobotMaster implements Runnable
 							mode = Constants.SMODE_RAW;
 						else if(arg[1].equalsIgnoreCase("bool"))
 							mode = Constants.SMODE_BOOL;
-						else if(arg[1].equalsIgnoreCase("switch"))
-							mode = Constants.SMODE_SWITCH;
-						else if(arg[1].equalsIgnoreCase("periodic"))
-							mode = Constants.SMODE_PERIODIC;
+						else if(arg[1].equalsIgnoreCase("pulse"))
+							mode = Constants.SMODE_PULSE;
+						else if(arg[1].equalsIgnoreCase("edge"))
+							mode = Constants.SMODE_EDGE;
 						else if(arg[1].equalsIgnoreCase("percent"))
 							mode = Constants.SMODE_PERCENT;
 						else
@@ -400,7 +422,7 @@ public class RobotMaster implements Runnable
 							"should be 'type', 'mode'");
 				}
 				
-				setSensor((byte)(sen - 1), type, mode);
+				setSensor(sen, type, mode);
 			}
 			catch(NumberFormatException e)
 			{
@@ -446,7 +468,7 @@ public class RobotMaster implements Runnable
 					{
 						case Constants.SMODE_RAW:
 							if(reply[6] == Constants.SENSOR_COLOR_FULL)
-								switch(reply[10]) //FIXME Czy 11?
+								switch(reply[12])
 								{
 									case Constants.COLOR_RED:
 										res = "RED";
@@ -473,8 +495,8 @@ public class RobotMaster implements Runnable
 							break;
 
 						case Constants.SMODE_BOOL:
-						case Constants.SMODE_SWITCH:
-						case Constants.SMODE_PERIODIC:
+						case Constants.SMODE_PULSE:
+						case Constants.SMODE_EDGE:
 						case Constants.SMODE_PERCENT:
 							res = Integer.toString((reply[13] << 8) + reply[12]);
 					}
@@ -499,8 +521,10 @@ public class RobotMaster implements Runnable
 	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
 	public static void main(String[] args) throws SocketException, IOException
 	{
-		RobotMaster master = new RobotMaster(new SocketConnection(6666), new BluetoothConnection(
-//				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
-				"btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false"));
+		RobotMaster master = new RobotMaster(new SocketConnection(6666));
+
+		NxtBluetoothGUI gui = new NxtBluetoothGUI(master);
+		gui.setVisible(true);
+		
 	}
 }

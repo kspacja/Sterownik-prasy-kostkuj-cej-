@@ -11,7 +11,7 @@ set-sensor
 1|2|3|4
 type=(touch|color|light_ambient|light_reflected|sound|sound_db|sound_dba|color_as_light_red|color_as_light_green
 color_as_light_blue|color_as_light_ambient|ultrasonic)
-[mode=(raw|bool|switch|periodic|percent)]
+[mode=(raw|bool|pulse|edge|percent)]
 
 set-sensor 1 type=color
 
