@@ -20,20 +20,26 @@ public class RobotMaster implements Runnable
 	private byte[][] sensorData = new byte[4][2];
 	private int timeout;
 	
-	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth, int timeout)
+	public RobotMaster(SocketConnection socket, int timeout)
 	{
 		ss = socket;
-		bt = bluetooth;
+		bt = null;
 		this.timeout = timeout;
 		robotTalker = new Thread(this);
 		robotTalker.start();
 	}
 	
-	public RobotMaster(SocketConnection socket, BluetoothConnection bluetooth)
+	public void changeBluetoothConnection(BluetoothConnection b)
 	{
-		this(socket, bluetooth, 200);
+		if (bt!=null) bt.finalize();
+		bt = b;
 	}
 	
+	public RobotMaster(SocketConnection socket)
+	{
+		this(socket, 200);
+	}
+
 	@Override
 	public void run()
 	{
@@ -121,11 +127,6 @@ public class RobotMaster implements Runnable
 							System.err.println("!? Failed to send an UDP reply packet");
 							e.printStackTrace();
 						}
-					}
-					catch(IOException e)
-					{
-						System.err.println("!! Failed to communicate with the robot");
-						e.printStackTrace();
 					}
 					catch(InterruptedException e)
 					{
@@ -520,8 +521,10 @@ public class RobotMaster implements Runnable
 	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
 	public static void main(String[] args) throws SocketException, IOException
 	{
-		RobotMaster master = new RobotMaster(new SocketConnection(6666), new BluetoothConnection(
-//				"btspp://0016530BD2F6:1;authenticate=false;encrypt=false;master=false"));
-				"btspp://0016530D3A52:1;authenticate=false;encrypt=false;master=false"), 100);
+		RobotMaster master = new RobotMaster(new SocketConnection(6666));
+
+		NxtBluetoothGUI gui = new NxtBluetoothGUI(master);
+		gui.setVisible(true);
+		
 	}
 }
