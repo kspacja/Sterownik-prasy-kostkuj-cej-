@@ -9,14 +9,10 @@
  */
 public class Czujniki {
     static int numerSensora = -1;
-    static int modeSensora = -1;
+    //static int modeSensora = -1;
     static int typeSensora = -1;
-    
-    public static String readSensor(){
-        String wynik = "Wynik czujnika "+Integer.toString(getSensor());
-        return(wynik);
-    }
 
+    //poczebne
     public static void setSensor(int i){
         numerSensora = i;
         System.out.println("Ustawiono sensor "+i);
@@ -25,7 +21,16 @@ public class Czujniki {
     public static int getSensor(){
         return(numerSensora);
     }
-
+    //poczebne
+    public static String readSensor(){
+        if(getSensor()>0){
+        String wynik = CommandLn.CommandSensor(getSensor(), getSensorType());
+        System.out.println("Otrzymany wynik: "+wynik);
+        return(wynik);
+        }
+        else return("Wybierz czujnik");
+    }        
+    //poczebne
     public static void setSensorType(int i){
         switch(i){
             case 1: System.out.println("ustawiono typ touch");
@@ -41,12 +46,14 @@ public class Czujniki {
                     typeSensora =4;
                     break;
         }
+        CommandLn.SetSensor(getSensor(), i);
     }
 
     public static int getSensorType(){
         return(typeSensora);
     }
 
+    /*niepoczebne
     public static void setSensorMode(int i){
         switch(i){
             case 1: System.out.println("ustawiono tryb bool");
@@ -63,9 +70,10 @@ public class Czujniki {
 
     public static int getSensorMode(){
         return(modeSensora);
-    }
+    }*/
 
     public static void resetSensor(int i){
+        CommandLn.CommandSensor(i, -10);
         System.out.println("Sensor nr. "+i+" zresetowany");
     }
 }
