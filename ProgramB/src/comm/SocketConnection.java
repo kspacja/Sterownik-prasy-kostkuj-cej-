@@ -46,9 +46,9 @@ public class SocketConnection implements Runnable
 				continue;
 			}
 			
-			int len = (lenpacket.getData()[0] << 3) +
-					(lenpacket.getData()[1] << 2) +
-					(lenpacket.getData()[2] << 1) +
+			int len = (lenpacket.getData()[0] << (3*8)) |
+					(lenpacket.getData()[1] << (2*8)) |
+					(lenpacket.getData()[2] << 8) |
 					lenpacket.getData()[3];
 			
 			// Oczekuje na otrzymanie właściwego pakietu

@@ -177,6 +177,11 @@ public class RobotMaster implements Runnable
 		send(bb.array(), false);
 	}
 	
+	private void getMotorState(byte which)
+	{
+		send(new byte[]{0, 6, which}, true);
+	}
+	
 	private void setSensor(byte which, byte type, byte mode)
 	{
 		sensorData[which][0] = type;
@@ -293,6 +298,22 @@ public class RobotMaster implements Runnable
 				(byte)0x20, tacholimit);
 			// 3 - MOTORON + BRAKE
 			//TODO 0x20 - Teraz tylko running, potem dodać inne tryby
+		}
+		else if(args[0].equalsIgnoreCase("get-motor-state"))
+		{
+			byte abc;
+			if(args[1].equalsIgnoreCase("A"))
+				abc = Constants.MOTOR_A;
+			else if(args[1].equalsIgnoreCase("B"))
+				abc = Constants.MOTOR_B;
+			else if(args[1].equalsIgnoreCase("C"))
+				abc = Constants.MOTOR_C;
+			else if(args[1].equalsIgnoreCase("ALL"))
+				abc = Constants.MOTOR_ALL;
+			else
+				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
+			
+			getMotorState(abc);
 		}
 		else if(args[0].equalsIgnoreCase("get-sensor"))
 		{
@@ -458,7 +479,7 @@ public class RobotMaster implements Runnable
 			else
 				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
 			
-			resetMotor(abc, args.length >= 2 && args[2].equalsIgnoreCase("absolute"));
+			resetMotor(abc, args.length >= 3 && args[2].equalsIgnoreCase("absolute"));
 		}
 		else
 			throw new ParserException("Unknown command: "+args[0]);
@@ -505,21 +526,22 @@ public class RobotMaster implements Runnable
 										break;
 								}
 							else
-								//FIXME Czy to powinien być long? Bo java nie chce dać unsigned
-								res = Integer.toString((reply[11] << 8) + reply[10]);
+								// ushort == int
+								res = Integer.toString(0xffff & ((reply[11] << 8) | reply[10]));
 							break;
 
 						case Constants.SMODE_BOOL:
 						case Constants.SMODE_PULSE:
 						case Constants.SMODE_EDGE:
 						case Constants.SMODE_PERCENT:
-							res = Integer.toString((reply[13] << 8) + reply[12]);
+							// ushort == int
+							res = Integer.toString(0xffff & ((reply[13] << 8) | reply[12]));
 					}
 				break;
 			
 			case Constants.CMD_LSREAD:
 				if(reply[3] > 0) // bytes read
-					//TODO Na razie pod sensor, dać możliwość rozszerzenia
+					//TODO Na razie pod sensor ultrasonic, dać możliwość rozszerzenia
 					res = Byte.toString(reply[4]);
 				else
 					res = "No bytes read";
@@ -528,9 +550,37 @@ public class RobotMaster implements Runnable
 			case Constants.CMD_LSGETSTATUS:
 				res = Byte.toString(reply[3]);
 				break;
+				
+			case Constants.CMD_GETOUTPUTSTATE:
+				StringBuffer bf = new StringBuffer();
+				bf.append(reply[4]); // Power
+				bf.append(' ');
+				bf.append(0xffffffffL & ((reply[12] << (3*8)) |
+					(reply[11] << (2*8)) |
+					(reply[10] << 8) |
+					reply[9])); // TachoLimit (limit na obecny ruch)
+				bf.append(' ');
+				bf.append((reply[16] << (3*8)) |
+					(reply[15] << (2*8)) |
+					(reply[14] << 8) |
+					reply[13]); // TachoCount (liczba pomiarów (?) od ostatniego resetu sensoru motora)
+					//TODO przetestować powyższy parametr i jakby co, wyrzucić
+				bf.append(' ');
+				bf.append((reply[20] << (3*8)) |
+					(reply[19] << (2*8)) |
+					(reply[18] << 8) |
+					reply[17]); // BlockTachoCount (pozycja od ostatniego zaprogramowanego ruchu)
+				bf.append(' ');
+				bf.append((reply[24] << (3*8)) |
+					(reply[23] << (2*8)) |
+					(reply[22] << 8) |
+					reply[21]); // Pozycja względem ostatniego resetu sensoru metora
+				
+				res = bf.toString();
+				break;
 		}
 		
-		return res.toString();
+		return res;
 	}
 	
 	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
