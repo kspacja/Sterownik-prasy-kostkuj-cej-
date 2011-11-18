@@ -13,7 +13,8 @@ public class Panel extends javax.swing.JFrame {
 
     /** Creates new form Panel */
     public Panel() {
-        initComponents();       
+        initComponents();
+
 
     }
 
@@ -958,8 +959,12 @@ public class Panel extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void wczytajMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wczytajMouseClicked
-        String tekst = Czujniki.readSensor();        
+        Czujniki.setSensor(1);
+        if (fileName.length() >0){
+        String tekst = Czujniki.readSensor(1);
         Wyjscie1.append(tekst+"\n");
+        }
+        else System.out.println("Nie wybrano pośrednika");
 }//GEN-LAST:event_wczytajMouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -1032,27 +1037,39 @@ public class Panel extends javax.swing.JFrame {
 
     private void typeButtonTouchItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonTouchItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(1);
-        Czujniki.setSensorType(1);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound1.setSelected(false);
+        typeButtonLight1.setSelected(false);
+        typeButtonUltrasonic1.setSelected(false);
+        //Czujniki.setSensor(1);
+        Czujniki.setSensorType(1,1);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonTouchItemStateChanged
 
     private void wczytaj2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wczytaj2MouseClicked
-        
-        String tekst = Czujniki.readSensor();
+        Czujniki.setSensor(2);
+        if (fileName.length()>0){
+        String tekst = Czujniki.readSensor(2);
         Wyjscie2.append(tekst+"\n");
+        }
+        else System.out.println("Nie wybrano pośrednika");
     }//GEN-LAST:event_wczytaj2MouseClicked
 
     private void wczytaj3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wczytaj3MouseClicked
-        
-        String tekst = Czujniki.readSensor();
+        Czujniki.setSensor(3);
+        if(fileName.length()>0){
+        String tekst = Czujniki.readSensor(3);
         Wyjscie3.append(tekst+"\n");
+        }
+        else System.out.println("Nie wybrano pośrednika");
     }//GEN-LAST:event_wczytaj3MouseClicked
 
     private void wczytaj4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_wczytaj4MouseClicked
-        
-        String tekst = Czujniki.readSensor();
+        Czujniki.setSensor(4);
+        if(fileName.length()>0){
+        String tekst = Czujniki.readSensor(4);
         Wyjscie4.append(tekst+"\n");
+        }
+        else System.out.println("Nie wybrano pośrednika");
     }//GEN-LAST:event_wczytaj4MouseClicked
 
     private void Clear2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_Clear2MouseClicked
@@ -1069,9 +1086,12 @@ public class Panel extends javax.swing.JFrame {
 
     private void typeButtonTouch2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonTouch2ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(2);
-        Czujniki.setSensorType(1);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound2.setSelected(false);
+        typeButtonLight2.setSelected(false);
+        typeButtonUltrasonic2.setSelected(false);
+        //Czujniki.setSensor(2);
+        Czujniki.setSensorType(2,1);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonTouch2ItemStateChanged
 
     private void typeButtonTouch2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonTouch2ActionPerformed
@@ -1080,9 +1100,12 @@ public class Panel extends javax.swing.JFrame {
 
     private void typeButtonTouch3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonTouch3ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(3);
-        Czujniki.setSensorType(1);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound3.setSelected(false);
+        typeButtonLight3.setSelected(false);
+        typeButtonUltrasonic3.setSelected(false);
+        //Czujniki.setSensor(3);
+        Czujniki.setSensorType(3,1);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonTouch3ItemStateChanged
 
     private void typeButtonTouch3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonTouch3ActionPerformed
@@ -1091,9 +1114,12 @@ public class Panel extends javax.swing.JFrame {
 
     private void typeButtonTouch4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonTouch4ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(4);
-        Czujniki.setSensorType(1);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound4.setSelected(false);
+        typeButtonLight4.setSelected(false);
+        typeButtonUltrasonic4.setSelected(false);
+        //Czujniki.setSensor(4);
+        Czujniki.setSensorType(4,1);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonTouch4ItemStateChanged
 
     private void typeButtonTouch4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_typeButtonTouch4ActionPerformed
@@ -1118,86 +1144,122 @@ public class Panel extends javax.swing.JFrame {
 
     private void typeButtonSound1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonSound1ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(1);
-        Czujniki.setSensorType(2);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch.setSelected(false);
+        typeButtonLight1.setSelected(false);
+        typeButtonUltrasonic1.setSelected(false);    
+        //Czujniki.setSensor(1);
+        Czujniki.setSensorType(1,2);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonSound1ItemStateChanged
 
     private void typeButtonSound2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonSound2ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(2);
-        Czujniki.setSensorType(2);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch2.setSelected(false);
+        typeButtonLight2.setSelected(false);
+        typeButtonUltrasonic2.setSelected(false);
+        //Czujniki.setSensor(2);
+        Czujniki.setSensorType(2,2);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonSound2ItemStateChanged
 
     private void typeButtonSound3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonSound3ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(3);
-        Czujniki.setSensorType(2);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch3.setSelected(false);
+        typeButtonLight3.setSelected(false);
+        typeButtonUltrasonic3.setSelected(false);
+        //Czujniki.setSensor(3);
+        Czujniki.setSensorType(3,2);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonSound3ItemStateChanged
 
     private void typeButtonSound4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonSound4ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(4);
-        Czujniki.setSensorType(2);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch4.setSelected(false);
+        typeButtonLight4.setSelected(false);
+        typeButtonUltrasonic4.setSelected(false);
+        //Czujniki.setSensor(4);
+        Czujniki.setSensorType(4,2);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonSound4ItemStateChanged
 
     private void typeButtonLight1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonLight1ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(1);
-        Czujniki.setSensorType(3);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound1.setSelected(false);
+        typeButtonTouch.setSelected(false);
+        typeButtonUltrasonic1.setSelected(false);
+        //Czujniki.setSensor(1);
+        Czujniki.setSensorType(1,3);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonLight1ItemStateChanged
 
     private void typeButtonLight2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonLight2ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(2);
-        Czujniki.setSensorType(3);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch2.setSelected(false);
+        typeButtonSound2.setSelected(false);
+        typeButtonUltrasonic2.setSelected(false);    
+        //Czujniki.setSensor(2);
+        Czujniki.setSensorType(2,3);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonLight2ItemStateChanged
 
     private void typeButtonLight3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonLight3ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(3);
-        Czujniki.setSensorType(3);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound3.setSelected(false);
+        typeButtonTouch3.setSelected(false);
+        typeButtonUltrasonic3.setSelected(false);
+        //Czujniki.setSensor(3);
+        Czujniki.setSensorType(3,3);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonLight3ItemStateChanged
 
     private void typeButtonLight4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonLight4ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(4);
-        Czujniki.setSensorType(3);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound4.setSelected(false);
+        typeButtonTouch4.setSelected(false);
+        typeButtonUltrasonic4.setSelected(false);
+        //Czujniki.setSensor(4);
+        Czujniki.setSensorType(4,3);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonLight4ItemStateChanged
 
     private void typeButtonUltrasonic1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonUltrasonic1ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(1);
-        Czujniki.setSensorType(4);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound1.setSelected(false);
+        typeButtonLight1.setSelected(false);
+        typeButtonTouch.setSelected(false);
+        //Czujniki.setSensor(1);
+        Czujniki.setSensorType(1,4);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonUltrasonic1ItemStateChanged
 
     private void typeButtonUltrasonic2ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonUltrasonic2ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(2);
-        Czujniki.setSensorType(4);}
-        else Czujniki.setSensor(-1);
+        typeButtonTouch2.setSelected(false);
+        typeButtonLight2.setSelected(false);
+        typeButtonSound2.setSelected(false);
+        //Czujniki.setSensor(2);
+        Czujniki.setSensorType(2,4);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonUltrasonic2ItemStateChanged
 
     private void typeButtonUltrasonic3ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonUltrasonic3ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(3);
-        Czujniki.setSensorType(4);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound3.setSelected(false);
+        typeButtonLight3.setSelected(false);
+        typeButtonTouch3.setSelected(false);
+        //Czujniki.setSensor(3);
+        Czujniki.setSensorType(3,4);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonUltrasonic3ItemStateChanged
 
     private void typeButtonUltrasonic4ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_typeButtonUltrasonic4ItemStateChanged
         if (evt.getStateChange() == 1){
-        Czujniki.setSensor(4);
-        Czujniki.setSensorType(4);}
-        else Czujniki.setSensor(-1);
+        typeButtonSound4.setSelected(false);
+        typeButtonLight4.setSelected(false);
+        typeButtonTouch4.setSelected(false);
+        //Czujniki.setSensor(4);
+        Czujniki.setSensorType(4,4);}
+        //else Czujniki.setSensor(-1);
     }//GEN-LAST:event_typeButtonUltrasonic4ItemStateChanged
 
     private void rightButton1ItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_rightButton1ItemStateChanged
@@ -1329,7 +1391,7 @@ public class Panel extends javax.swing.JFrame {
 
              String path = file.getParent();
              System.out.println(path);
-             String fileName = file.getName();
+             fileName = file.getName();
              System.out.println(fileName.substring(0, fileName.lastIndexOf(".")));
              CommandLn.setPath(path);
              CommandLn.setFile(fileName.substring(0, fileName.lastIndexOf(".")));
@@ -1436,4 +1498,5 @@ public class Panel extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
     int silnik = -1;
     int type = -1;
+    String fileName = "";
 }

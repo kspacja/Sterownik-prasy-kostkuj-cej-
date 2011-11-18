@@ -129,7 +129,13 @@ public static String fileName="";
         }
         
         //początek sekcji odbioru odpowiedzi
-        BufferedReader processOutput = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        BufferedReader processOutput=null;
+        try{
+        processOutput = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+        }
+        catch(Exception e){
+            System.out.println("Nie udało się zainicjować strumienia zwracającego");
+        }
         long startTime = System.currentTimeMillis();
         long current = startTime;
         String line = "";
@@ -182,9 +188,8 @@ public static String fileName="";
         else if(unlimited==-1){
             commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
         }
-        else commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);
+        else commandToSend = createCommand(silnik, stopnie, obroty, unlimited, moc);       
         
-        //commandToSend = "dir\n" + "exit\n";
 
         System.out.println(commandToSend);
         //RABNAC CATCHA
