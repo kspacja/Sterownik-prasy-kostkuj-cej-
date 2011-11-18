@@ -133,15 +133,24 @@ public class BluetoothConnection extends Observable
 			}
 		} catch (IOException e) {
 			setError(ERROR_RECEIVING);
+			e.printStackTrace();
 		}
 		
 		return res;
 	}
 	
 	// Pozbywa się wszystkich danych, które zalegają w buforze
-	public void clearInput() throws IOException
+	public void clearInput()
 	{
-		while(istream.available() > 0)
-			istream.read();
+		try
+		{
+			while(istream.available() > 0)
+				istream.read();
+		}
+		catch(IOException e)
+		{
+			setError(ERROR_RECEIVING);
+			e.printStackTrace();
+		}
 	}
 }

@@ -26,18 +26,23 @@ public class RobotMaster implements Runnable
 		bt = null;
 		this.timeout = timeout;
 		robotTalker = new Thread(this);
-		robotTalker.start();
-	}
-	
-	public void changeBluetoothConnection(BluetoothConnection b)
-	{
-		if (bt!=null) bt.finalize();
-		bt = b;
 	}
 	
 	public RobotMaster(SocketConnection socket)
 	{
-		this(socket, 200);
+		this(socket, 150);
+	}
+	
+	public RobotMaster(SocketConnection socket, BluetoothConnection bt)
+	{
+		this(socket);
+		changeBluetoothConnection(bt);
+	}
+	
+	public RobotMaster(SocketConnection socket, BluetoothConnection bt, int timeout)
+	{
+		this(socket, timeout);
+		changeBluetoothConnection(bt);
 	}
 
 	@Override
@@ -62,13 +67,9 @@ public class RobotMaster implements Runnable
 			while(ss.isAvailable())
 			{
 				// Czyszczę input, żeby jakiś opóźniony pakiet nie zdesynchronizował wszystkiego
-				try
+				synchronized(this)
 				{
 					bt.clearInput();
-				}
-				catch(IOException e)
-				{
-					e.printStackTrace();
 				}
 				
 				try
@@ -98,14 +99,16 @@ public class RobotMaster implements Runnable
 				{
 					try
 					{
-						bt.send(toRobot.removeFirst());
+						byte[] ans;
+						synchronized(this)
+						{
+							bt.send(toRobot.removeFirst());
+							Thread.sleep(timeout);
+							ans = bt.receive();
+						}
 						
-						Thread.sleep(timeout);
-
-						byte[] ans = bt.receive();
 						boolean mustAns = expectAns.removeFirst();
 						
-
 						try
 						{
 							if(ans != null)
@@ -135,6 +138,18 @@ public class RobotMaster implements Runnable
 				}
 			}
 		}
+	}
+	
+	public void changeBluetoothConnection(BluetoothConnection b)
+	{
+		synchronized(this)
+		{
+			if (bt!=null) bt.finalize();
+			bt = b;
+		}
+		
+		if(!robotTalker.isAlive())
+			robotTalker.start();
 	}
 	
 	private void send(byte[] msg, boolean ans)
