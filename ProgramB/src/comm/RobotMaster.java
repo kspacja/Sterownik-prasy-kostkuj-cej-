@@ -584,7 +584,6 @@ public class RobotMaster implements Runnable
 					(reply[15] << (2*8)) |
 					(reply[14] << 8) |
 					reply[13]); // TachoCount (liczba pomiarów (?) od ostatniego resetu sensoru motora)
-					//TODO przetestować powyższy parametr i jakby co, wyrzucić
 				bf.append(' ');
 				bf.append((reply[20] << (3*8)) |
 					(reply[19] << (2*8)) |
@@ -606,9 +605,29 @@ public class RobotMaster implements Runnable
 	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
 	public static void main(String[] args) throws SocketException, IOException
 	{
-		RobotMaster master = new RobotMaster(new SocketConnection(6666));
-
+		// Jeden argument obowiązkowy (numer portu), dwa opcjonalne (adres robota, timeout)
+		// W takiej kolejności
+		
+		if(args.length == 0)
+		{
+			System.err.println("Podaj numer portu");
+			System.exit(1);
+		}
+		
+		SocketConnection soc = new SocketConnection(Integer.parseInt(args[0]));
+		String addr = args.length >= 2 ? args[1] : null;
+		Integer timeout = args.length >= 3 ? Integer.parseInt(args[2]) : null;
+		
+		RobotMaster master = timeout == null ? new RobotMaster(soc):
+			new RobotMaster(soc, timeout);
 		NxtBluetoothGUI gui = new NxtBluetoothGUI(master);
+		
+		if(addr != null)
+		{
+			BluetoothConnection bt = new BluetoothConnection(addr, gui);
+			gui.swapConnection(bt);
+		}
+		
 		gui.setVisible(true);
 		
 	}

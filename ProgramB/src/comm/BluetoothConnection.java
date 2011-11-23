@@ -44,6 +44,21 @@ public class BluetoothConnection extends Observable
 		connectTo(device);
 	}
 	
+	public BluetoothConnection(String addr, Observer observer)
+	{
+		setStatus(BluetoothConnection.STATUS_DISCONNECTED);
+		setError(ERROR_NONE);
+		addObserver(observer);
+		connectTo(addr);
+	}
+	
+	public BluetoothConnection(String addr)
+	{
+		setStatus(BluetoothConnection.STATUS_DISCONNECTED);
+		setError(ERROR_NONE);
+		connectTo(addr);
+	}
+	
 	public void connectTo(RemoteDevice device) {
 		try {
 			setStatus(BluetoothConnection.STATUS_CONNECTING);
@@ -62,6 +77,34 @@ public class BluetoothConnection extends Observable
 			}
 			
 		} catch (IOException e) {
+			setStatus(BluetoothConnection.STATUS_DISCONNECTED);
+			e.printStackTrace();
+		}
+	}
+	
+	public void connectTo(String addr)
+	{
+		try
+		{
+			setStatus(BluetoothConnection.STATUS_CONNECTING);
+			String deviceURL = "btspp://"+addr+":1;authenticate=false;encrypt=false;master=false";
+			conn = (StreamConnection) Connector.open(deviceURL);
+			istream = conn.openInputStream();
+			ostream = conn.openOutputStream();
+			setStatus(BluetoothConnection.STATUS_OK);
+			
+			RemoteDevice device = RemoteDevice.getRemoteDevice(conn);
+			// system powinien przeprowadzic autentykacje tylko jesli nie pamieta pinu
+			if (!device.authenticate())
+			{
+				setStatus(BluetoothConnection.STATUS_ERROR);
+				setError(BluetoothConnection.ERROR_AUTHENTICATION);
+			}
+			else
+				setStatus(BluetoothConnection.STATUS_OK);
+		}
+		catch (IOException e)
+		{
 			setStatus(BluetoothConnection.STATUS_DISCONNECTED);
 			e.printStackTrace();
 		}
@@ -151,6 +194,20 @@ public class BluetoothConnection extends Observable
 		{
 			setError(ERROR_RECEIVING);
 			e.printStackTrace();
+		}
+	}
+	
+	public RemoteDevice getDevice()
+	{
+		try
+		{
+			return RemoteDevice.getRemoteDevice(conn);
+		}
+		catch(IOException e)
+		{
+			setError(ERROR_RECEIVING);
+			e.printStackTrace();
+			return null;
 		}
 	}
 }

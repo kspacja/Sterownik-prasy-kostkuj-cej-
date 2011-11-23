@@ -148,11 +148,21 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	
 //	wywolywane z selectdevice
 	public void changeDevice(RemoteDevice d) {
-		if (device == null || device.getBluetoothAddress() != d.getBluetoothAddress()) {
-			device = d;
-			updateDeviceInfo();
-			connectToDevice();
-		}
+		//XXX Kamil narzekał na ten sposób sprawdzania, więc wykomentowałem
+		//if (device == null || device.getBluetoothAddress() != d.getBluetoothAddress()) {
+		device = d;
+		updateDeviceInfo();
+		connectToDevice();
+		//}
+	}
+	
+	// wywoływane z main LIKE A BOSS
+	public void swapConnection(BluetoothConnection bt)
+	{
+		bc = bt;
+		device = bt.getDevice();
+		updateDeviceInfo();
+		parent.changeBluetoothConnection(bt);
 	}
 	
 	public void connectToDevice() {
