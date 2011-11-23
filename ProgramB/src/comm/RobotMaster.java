@@ -294,9 +294,11 @@ public class RobotMaster implements Runnable
 				}
 			}
 
-			motor(abc, (byte)(pow*powmod), (byte)3, (byte)0, (byte)0,
-				(byte)0x20, tacholimit);
-			// 3 - MOTORON + BRAKE
+			motor(abc, (byte)(pow*powmod),
+				(byte)(Constants.MOTOR_MODE_ON | Constants.MOTOR_MODE_BRAKE),
+				Constants.MOTOR_REG_IDLE, (byte)0,
+				powmod != 0 ? Constants.MOTOR_RUNSTATE_RUNNING : Constants.MOTOR_RUNSTATE_IDLE,
+				tacholimit);
 			//TODO 0x20 - Teraz tylko running, potem dodać inne tryby
 		}
 		else if(args[0].equalsIgnoreCase("get-motor-state"))
@@ -479,7 +481,25 @@ public class RobotMaster implements Runnable
 			else
 				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
 			
-			resetMotor(abc, args.length >= 3 && args[2].equalsIgnoreCase("absolute"));
+		resetMotor(abc, args.length >= 3 && args[2].equalsIgnoreCase("absolute"));
+		}
+		else if(args[0].equalsIgnoreCase("motor-hard-brake"))
+		{
+			byte abc;
+			if(args[1].equalsIgnoreCase("A"))
+				abc = Constants.MOTOR_A;
+			else if(args[1].equalsIgnoreCase("B"))
+				abc = Constants.MOTOR_B;
+			else if(args[1].equalsIgnoreCase("C"))
+				abc = Constants.MOTOR_C;
+			else if(args[1].equalsIgnoreCase("ALL"))
+				abc = Constants.MOTOR_ALL;
+			else
+				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
+			
+			motor(abc, (byte)0, (byte)(Constants.MOTOR_MODE_BRAKE | Constants.MOTOR_MODE_ON |
+					Constants.MOTOR_MODE_REG), Constants.MOTOR_REG_SPEED,
+					(byte)0, Constants.MOTOR_RUNSTATE_RUNNING, (short)0);
 		}
 		else
 			throw new ParserException("Unknown command: "+args[0]);
@@ -535,7 +555,7 @@ public class RobotMaster implements Runnable
 						case Constants.SMODE_EDGE:
 						case Constants.SMODE_PERCENT:
 							// ushort == int
-							res = Integer.toString(0xffff & ((reply[13] << 8) | reply[12]));
+							res = Integer.toString((reply[13] << 8) | reply[12]);
 					}
 				break;
 			

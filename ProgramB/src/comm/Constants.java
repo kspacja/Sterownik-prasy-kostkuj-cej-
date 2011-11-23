@@ -7,6 +7,19 @@ public class Constants
 	public static final byte MOTOR_C = 2;
 	public static final byte MOTOR_ALL = (byte)0xFF;
 	
+	public static final byte MOTOR_MODE_ON = 0x01;
+	public static final byte MOTOR_MODE_BRAKE = 0x02;
+	public static final byte MOTOR_MODE_REG = 0x04;
+	
+	public static final byte MOTOR_REG_IDLE = 0;
+	public static final byte MOTOR_REG_SPEED = 0x01;
+	public static final byte MOTOR_REG_SYNC = 0x02;
+	
+	public static final byte MOTOR_RUNSTATE_IDLE = 0;
+	public static final byte MOTOR_RUNSTATE_RAMPUP = 0x10;
+	public static final byte MOTOR_RUNSTATE_RUNNING = 0x20;
+	public static final byte MOTOR_RUNSTATE_RAMPDOWN = 0x40;
+	
 	public static final byte SENSOR_TOUCH = 1;
 	public static final byte SENSOR_LIGHT_ACTIVE = 5;
 	public static final byte SENSOR_LIGHT_INACTIVE = 6;

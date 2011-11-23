@@ -4,6 +4,9 @@ direction=(forward|backwards|stop)
 power=(0-100) // power, brak jeśli stop
 unlimited|seconds=x|degrees=x|rotations=x // brak jeśli stop
 
+motor-hard-brake
+A|B|C
+
 get-motor-state
 A|B|C
 
