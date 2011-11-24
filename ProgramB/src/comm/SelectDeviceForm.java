@@ -17,6 +17,7 @@ import javax.swing.BoxLayout;
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
@@ -65,6 +66,7 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+		setTitle("Wybierz urządzenie");
 
 		devicesDiscovered = new ArrayList<RemoteDevice>();
 		devicesListModel = new DefaultListModel();
@@ -118,16 +120,26 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==searchForDevicesButton) {
+			String searchString = "Szukaj urządzeń";
 			boolean started;
 			try {
-				started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, this);
-				if (started) {
-					System.out.println("Szukam urządzeń...");
-					devicesDiscovered.clear();
-					devicesListModel.clear();
+				if (searchForDevicesButton.getText().equals(searchString)) {
+					started = LocalDevice.getLocalDevice().getDiscoveryAgent().startInquiry(DiscoveryAgent.GIAC, this);
+					if (started) {
+						System.out.println("Szukam urządzeń...");
+						searchForDevicesButton.setText("Anuluj");
+						devicesDiscovered.clear();
+						devicesListModel.clear();
+					}
+				} else {
+					LocalDevice.getLocalDevice().getDiscoveryAgent().cancelInquiry(this);
+					searchForDevicesButton.setText(searchString);
 				}
 			} catch (BluetoothStateException e1) {
-				e1.printStackTrace();
+				JOptionPane.showMessageDialog(this,
+					    "Błąd korzystania z bluetooth:\n"+e1.getMessage(),
+					    "Błąd krytyczny",
+					    JOptionPane.ERROR_MESSAGE);
 			}
 		} else if (e.getSource()==connectButton) {
 			if ( ! devicesList.isSelectionEmpty()) {
@@ -137,7 +149,10 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 						try {
 							LocalDevice.getLocalDevice().getDiscoveryAgent().cancelInquiry(dl);
 						} catch (BluetoothStateException e1) {
-							e1.printStackTrace();
+							JOptionPane.showMessageDialog(parent,
+								    "Błąd korzystania z bluetooth:\n"+e1.getMessage(),
+								    "Błąd krytyczny",
+								    JOptionPane.ERROR_MESSAGE);
 						}
 						parent.changeDevice(devicesDiscovered.get(devicesList.getSelectedIndex()));
 					}
@@ -161,6 +176,7 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 
 	@Override
 	public void inquiryCompleted(int arg0) {
+		searchForDevicesButton.setText("Szukaj urządzeń");
 		System.out.println("Koniec szukania");
 	}
 
