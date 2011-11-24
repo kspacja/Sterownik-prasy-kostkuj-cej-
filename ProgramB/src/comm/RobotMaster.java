@@ -295,12 +295,12 @@ public class RobotMaster implements Runnable
 			}
 
 			motor(abc, (byte)(pow*powmod),
-				(byte)(Constants.MOTOR_MODE_ON | Constants.MOTOR_MODE_BRAKE),
-				Constants.MOTOR_REG_IDLE, (byte)0,
-				powmod != 0 ? Constants.MOTOR_RUNSTATE_RUNNING : Constants.MOTOR_RUNSTATE_IDLE,
-				tacholimit);
-			//TODO 0x20 - Teraz tylko running, potem dodać inne tryby
-		}
+					(byte)(Constants.MOTOR_MODE_ON | Constants.MOTOR_MODE_BRAKE),
+					Constants.MOTOR_REG_IDLE, (byte)0,
+					powmod != 0 ? Constants.MOTOR_RUNSTATE_RUNNING : Constants.MOTOR_RUNSTATE_IDLE,
+					tacholimit);
+				//TODO 0x20 - Teraz tylko running, potem dodać inne tryby
+			}
 		else if(args[0].equalsIgnoreCase("get-motor-state"))
 		{
 			byte abc;
@@ -481,7 +481,7 @@ public class RobotMaster implements Runnable
 			else
 				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
 			
-		resetMotor(abc, args.length >= 3 && args[2].equalsIgnoreCase("absolute"));
+			resetMotor(abc, args.length >= 3 && args[2].equalsIgnoreCase("absolute"));
 		}
 		else if(args[0].equalsIgnoreCase("motor-hard-brake"))
 		{
@@ -601,7 +601,7 @@ public class RobotMaster implements Runnable
 		
 		return res;
 	}
-	
+
 	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
 	public static void main(String[] args) throws SocketException, IOException
 	{
