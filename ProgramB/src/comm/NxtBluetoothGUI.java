@@ -275,6 +275,20 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		updateConnectionLabel();
 	}
 
+	public void swapConnection(BluetoothConnection bt)
+	{
+		bc = bt;
+		RemoteDevice d = bt.getDevice();
+		deviceAddress = d.getBluetoothAddress();
+		try
+		{
+			deviceName = d.getFriendlyName(false);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+		}
+		updateDeviceInfo();
+		parent.changeBluetoothConnection(bt);
+	}
 }
-
-
