@@ -1,8 +1,13 @@
 package comm;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
@@ -28,7 +33,7 @@ import comm.BluetoothConnection;
 import comm.RobotMaster;
 
 public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer {
-	
+
 	private static final long serialVersionUID = -3722504484672472629L;
 	private final String configFile = "nxt.conf";
 
@@ -36,8 +41,8 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	String deviceAddress;
 	String deviceName;
 	BluetoothConnection bc;
-	
-	
+
+
 	ImageIcon goodIcon, badIcon, noneIcon, procIcon;
 
 	//device
@@ -47,12 +52,20 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	private javax.swing.JLabel deviceNameLabel;
 	private javax.swing.JLabel deviceAddressLabel;
 	private javax.swing.JButton selectDeviceButton;
-	
+
 	//connection
 	private javax.swing.JPanel connectionPanel;
 	private javax.swing.JLabel connectionStatusLabel;
 	private javax.swing.JPanel actionPanel;
 	private javax.swing.JLabel actionLabel;
+
+	//tray
+	private PopupMenu popup;
+	private TrayIcon trayIcon;
+	private SystemTray tray;
+	MenuItem aboutItem;
+	MenuItem exitItem;
+
 
 	public NxtBluetoothGUI(RobotMaster parent) {
 		this.parent = parent;
@@ -76,13 +89,39 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			java.util.logging.Logger.getLogger(NxtBluetoothGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
 
+		//Jesli sie da, to dodajemy ikonke do traya
+		if (SystemTray.isSupported()) {
+			popup = new PopupMenu();
+			trayIcon = new TrayIcon(createImageIcon("/noneIcon.png").getImage());
+			tray = SystemTray.getSystemTray();
+			aboutItem = new MenuItem("Wyświetl / Ukryj");
+			exitItem = new MenuItem("Zamknij");
+			
+			popup.add(aboutItem);
+			popup.add(exitItem);
+			trayIcon.setPopupMenu(popup);
+			trayIcon.setToolTip("Klient NXT Bluetooth");
+            trayIcon.setImageAutoSize(true);
+			
+			try {
+				tray.add(trayIcon);
+			} catch (AWTException e) {
+				System.out.println("TrayIcon could not be added.");
+				return;
+			}
+			trayIcon.addActionListener(this);
+			exitItem.addActionListener(this);
+			aboutItem.addActionListener(this);
+
+		}
+
 		initComponents();
-		
+
 		wczytajConfig();
 
 		updateDeviceInfo();
 	}
-	
+
 	private void wczytajConfig() {
 		// Plik konfiguracyjny, na razie tylko ostatnio uzywane urzadzenie
 		// TODO: zapisywać nazwe, dodac setup portu socket
@@ -108,7 +147,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			}
 		}
 	}
-	
+
 	private void zapiszConfig() {
 		// Zapisz plik konfiguracyjny
 		File cnfFile = new File(configFile);
@@ -123,41 +162,41 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	}
 
-	// Pomocnicza metoda tworzaca obiekt ImageIcon ze sciezki
+	// Pomocnicza metoda tworzaca obiekt ImageIcon ze sciezki wzglednej
 	protected ImageIcon createImageIcon(String path) {
-	    java.net.URL imgURL = getClass().getResource(path);
-	    if (imgURL != null) {
-	        return new ImageIcon(imgURL);
-	    } else {
-	        System.err.println("Couldn't find file: " + path);
-	        return null;
-	    }
+		java.net.URL imgURL = getClass().getResource(path);
+		if (imgURL != null) {
+			return new ImageIcon(imgURL);
+		} else {
+			System.err.println("Couldn't find file: " + path);
+			return null;
+		}
 	}
 
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 		setTitle("Program B GUI");
-		
-//		Prerequisites
+
+		//		Prerequisites
 		goodIcon = createImageIcon("/goodIcon.png");
 		badIcon = createImageIcon("/badIcon.png");
 		noneIcon = createImageIcon("/noneIcon.png");
 		procIcon = createImageIcon("/procIcon.gif");
-//		getResource("/resources/image.png") - przyklad
-		
-	// Device panel
+		//		getResource("/resources/image.png") - przyklad
+
+		// Device panel
 		devicePanel = new javax.swing.JPanel();
 		deviceLeftPanel = new javax.swing.JPanel();
 		deviceLabel = new javax.swing.JLabel();
 		deviceNameLabel = new javax.swing.JLabel();
 		deviceAddressLabel = new javax.swing.JLabel();
 		selectDeviceButton = new javax.swing.JButton();
-		
+
 		deviceLabel.setText("Urządzenie:");
 		selectDeviceButton.setText("Wybierz urządzenie");
 		selectDeviceButton.setMinimumSize(selectDeviceButton.getSize());
 		selectDeviceButton.addActionListener(this);
-		
+
 		devicePanel.setLayout(new BoxLayout(devicePanel, BoxLayout.X_AXIS));
 		devicePanel.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED));
 		deviceLeftPanel.setLayout(new BoxLayout(deviceLeftPanel, BoxLayout.Y_AXIS));
@@ -171,37 +210,37 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		devicePanel.add(Box.createHorizontalGlue());
 		devicePanel.add(selectDeviceButton);
 		selectDeviceButton.setBorder(BorderFactory.createEmptyBorder(8,10,8,10));
-		
-	// Connection panel
+
+		// Connection panel
 		connectionPanel = new javax.swing.JPanel();
 		connectionStatusLabel = new javax.swing.JLabel();
 		actionPanel = new javax.swing.JPanel();
 		actionLabel = new javax.swing.JLabel();
-		
-//		connectionPanel.setLayout(new BoxLayout(connectionPanel, BoxLayout.Y_AXIS));
+
+		//		connectionPanel.setLayout(new BoxLayout(connectionPanel, BoxLayout.Y_AXIS));
 		connectionPanel.setLayout(new BorderLayout());
 		connectionPanel.setPreferredSize(new Dimension(400,100));
 		connectionStatusLabel.setHorizontalAlignment(JLabel.CENTER);
 		connectionStatusLabel.setIconTextGap(15);
 		connectionStatusLabel.setFont(new Font(null, Font.PLAIN, 25));
 		actionPanel.add(actionLabel);
-		
+
 		connectionPanel.add(connectionStatusLabel, BorderLayout.CENTER);
 		connectionPanel.add(actionLabel, BorderLayout.SOUTH);
-		
-	// Wrzuc wszystko na contentpane
+
+		// Wrzuc wszystko na contentpane
 		setLayout(new BorderLayout());
 		add(devicePanel, BorderLayout.NORTH);
 		add(connectionPanel, BorderLayout.CENTER);
-		
+
 		updateDeviceInfo();
 		updateConnectionLabel();
-		
+
 		pack();
 		setMinimumSize(getSize());
 	}
-	
-//	wywolywane z selectdevice
+
+	//	wywolywane z selectdevice
 	public void changeDevice(RemoteDevice d) {
 		String adres = d.getBluetoothAddress();
 		if (deviceAddress == null || !deviceAddress.equals(adres)) {
@@ -215,7 +254,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			}
 		}
 	}
-	
+
 	public void connectToDevice() {
 		if (deviceAddress!=null) {
 			bc = new BluetoothConnection(deviceAddress, this);
@@ -266,7 +305,19 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource()==selectDeviceButton) {
 			new SelectDeviceForm(this).setVisible(true);
+		} else if (e.getSource()==aboutItem || e.getSource()==trayIcon) {
+			if (this.isVisible()) {
+				setVisible(false);
+				aboutItem.setLabel("Wyświetl");
+			} else {
+				setVisible(true);
+				aboutItem.setLabel("Ukryj");
+			}
+		} else if (e.getSource()==exitItem) {
+			tray.remove(trayIcon);
+			System.exit(0);
 		}
+
 	}
 
 	@Override
