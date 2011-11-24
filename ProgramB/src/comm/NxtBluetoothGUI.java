@@ -5,9 +5,15 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.regex.Pattern;
 
 import javax.bluetooth.RemoteDevice;
 import javax.swing.BorderFactory;
@@ -22,12 +28,15 @@ import comm.BluetoothConnection;
 import comm.RobotMaster;
 
 public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer {
-
-	private static final long serialVersionUID = -3722504484672472629L;
 	
+	private static final long serialVersionUID = -3722504484672472629L;
+	private final String configFile = "nxt.conf";
+
 	RobotMaster parent;
-	RemoteDevice device;
+	String deviceAddress;
+	String deviceName;
 	BluetoothConnection bc;
+	
 	
 	ImageIcon goodIcon, badIcon, noneIcon, procIcon;
 
@@ -47,7 +56,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	public NxtBluetoothGUI(RobotMaster parent) {
 		this.parent = parent;
-		device = null;
+		deviceAddress = null;
 		bc = null;
 
 		try { // Ustawiamy look and feel
@@ -68,8 +77,52 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		}
 
 		initComponents();
+		
+		wczytajConfig();
+
+		updateDeviceInfo();
 	}
 	
+	private void wczytajConfig() {
+		// Plik konfiguracyjny, na razie tylko ostatnio uzywane urzadzenie
+		// TODO: zapisywać nazwe, dodac setup portu socket
+		File cnfFile = new File(configFile);
+		if (cnfFile.exists()) {
+			try {
+				BufferedReader in = new BufferedReader(new FileReader(cnfFile));
+				String line;
+				while ((line = in.readLine()) != null) {
+					// Do odczytania uzywam wyrazenia regularnego
+					Pattern p = Pattern.compile("=");
+					String[] result = p.split(line);
+					if (result.length == 2) {
+						if (result[0].equals("Device address")) {
+							deviceAddress=result[1];
+						} else if (result[0].equals("Device name")) {
+							deviceName=result[1];
+						}
+					} else System.out.println("Niepoprawny wpis w pliku konfiguracyjnym.");
+				}
+				in.close();
+			} catch (IOException e) {
+			}
+		}
+	}
+	
+	private void zapiszConfig() {
+		// Zapisz plik konfiguracyjny
+		File cnfFile = new File(configFile);
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(cnfFile));
+			out.write("Device address="+deviceAddress);
+			if (deviceName!=null)
+				out.write("Device name="+deviceName);
+			out.close();
+		} catch (IOException e) {
+		}
+
+	}
+
 	// Pomocnicza metoda tworzaca obiekt ImageIcon ze sciezki
 	protected ImageIcon createImageIcon(String path) {
 	    java.net.URL imgURL = getClass().getResource(path);
@@ -83,6 +136,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	private void initComponents() {
 		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setTitle("Program B GUI");
 		
 //		Prerequisites
 		goodIcon = createImageIcon("/goodIcon.png");
@@ -101,6 +155,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		
 		deviceLabel.setText("Urządzenie:");
 		selectDeviceButton.setText("Wybierz urządzenie");
+		selectDeviceButton.setMinimumSize(selectDeviceButton.getSize());
 		selectDeviceButton.addActionListener(this);
 		
 		devicePanel.setLayout(new BoxLayout(devicePanel, BoxLayout.X_AXIS));
@@ -148,42 +203,39 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	
 //	wywolywane z selectdevice
 	public void changeDevice(RemoteDevice d) {
-		//XXX Kamil narzekał na ten sposób sprawdzania, więc wykomentowałem
-		//if (device == null || device.getBluetoothAddress() != d.getBluetoothAddress()) {
-		device = d;
-		updateDeviceInfo();
-		connectToDevice();
-		//}
-	}
-	
-	// wywoływane z main LIKE A BOSS
-	public void swapConnection(BluetoothConnection bt)
-	{
-		bc = bt;
-		device = bt.getDevice();
-		updateDeviceInfo();
-		parent.changeBluetoothConnection(bt);
+		String adres = d.getBluetoothAddress();
+		if (deviceAddress == null || !deviceAddress.equals(adres)) {
+			try {
+				deviceAddress = d.getBluetoothAddress();
+				deviceName = d.getFriendlyName(false);
+				updateDeviceInfo();
+				connectToDevice();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void connectToDevice() {
-		if (device!=null) {
-			bc = new BluetoothConnection(device, this);
+		if (deviceAddress!=null) {
+			bc = new BluetoothConnection(deviceAddress, this);
 			parent.changeBluetoothConnection(bc);
-		} else System.err.println("Wywołanie connectToDevice() przy device==null");
+			zapiszConfig();
+
+		} else System.err.println("Wywolanie connectToDevice() przy device==null");
 	}
-	
+
 	private void updateDeviceInfo() {
-		if (device == null) {
+		if (deviceAddress == null) {
 			deviceNameLabel.setText("<brak>");
 			deviceAddressLabel.setText(" ");
 		} else {
-			try {
-				deviceNameLabel.setText("Nazwa: "+device.getFriendlyName(false));
-			} catch (IOException e) {
-				deviceNameLabel.setText("Nazwa niedostępna");
+			if (deviceName == null) {
+				deviceNameLabel.setText("Nazwa: ");
+			} else {
+				deviceNameLabel.setText("Nazwa: "+deviceName);
 			}
-			deviceAddressLabel.setText("Adres: "+device.getBluetoothAddress());
-			
+			deviceAddressLabel.setText("Adres: "+deviceAddress);
 		}
 	}
 	private void updateConnectionLabel() {
