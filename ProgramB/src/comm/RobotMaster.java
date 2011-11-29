@@ -620,7 +620,8 @@ public class RobotMaster implements Runnable
 		
 		RobotMaster master = timeout == null ? new RobotMaster(soc):
 			new RobotMaster(soc, timeout);
-		NxtBluetoothGUI gui = new NxtBluetoothGUI(master);
+		NxtBluetoothGUI gui = new NxtBluetoothGUI();
+		gui.setParent(master);
 		
 		if(addr != null)
 		{

@@ -27,6 +27,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
 import comm.BluetoothConnection;
@@ -58,6 +59,9 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	private javax.swing.JLabel connectionStatusLabel;
 	private javax.swing.JPanel actionPanel;
 	private javax.swing.JLabel actionLabel;
+	
+	private javax.swing.JPanel controlPanel;
+	private javax.swing.JButton connectButton;
 
 	//tray
 	private PopupMenu popup;
@@ -67,8 +71,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	MenuItem exitItem;
 
 
-	public NxtBluetoothGUI(RobotMaster parent) {
-		this.parent = parent;
+	public NxtBluetoothGUI() {
 		deviceAddress = null;
 		bc = null;
 
@@ -88,11 +91,14 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(NxtBluetoothGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
+		
+
+		setIconImage(createImageIcon("/guiIcon.png").getImage());
 
 		//Jesli sie da, to dodajemy ikonke do traya
 		if (SystemTray.isSupported()) {
 			popup = new PopupMenu();
-			trayIcon = new TrayIcon(createImageIcon("/noneIcon.png").getImage());
+			trayIcon = new TrayIcon(createImageIcon("/guiIcon.png").getImage());
 			tray = SystemTray.getSystemTray();
 			aboutItem = new MenuItem("Wyświetl / Ukryj");
 			exitItem = new MenuItem("Zamknij");
@@ -120,6 +126,10 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		wczytajConfig();
 
 		updateDeviceInfo();
+	}
+	
+	public void setParent(RobotMaster parent) {
+		this.parent = parent;
 	}
 
 	private void wczytajConfig() {
@@ -211,6 +221,15 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		devicePanel.add(selectDeviceButton);
 		selectDeviceButton.setBorder(BorderFactory.createEmptyBorder(8,10,8,10));
 
+
+		// Control panel
+		controlPanel = new javax.swing.JPanel();
+		connectButton = new javax.swing.JButton("Połącz");
+		
+		controlPanel.add(connectButton);
+		connectButton.setPreferredSize(new Dimension(120, 28));
+		connectButton.addActionListener(this);
+		
 		// Connection panel
 		connectionPanel = new javax.swing.JPanel();
 		connectionStatusLabel = new javax.swing.JLabel();
@@ -226,6 +245,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		actionPanel.add(actionLabel);
 
 		connectionPanel.add(connectionStatusLabel, BorderLayout.CENTER);
+		connectionPanel.add(controlPanel, BorderLayout.EAST);
 		connectionPanel.add(actionLabel, BorderLayout.SOUTH);
 
 		// Wrzuc wszystko na contentpane
@@ -257,11 +277,13 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	public void connectToDevice() {
 		if (deviceAddress!=null) {
-			bc = new BluetoothConnection(deviceAddress, this);
-			parent.changeBluetoothConnection(bc);
-			zapiszConfig();
+			if (deviceAddress!=null) {
+				bc = new BluetoothConnection(deviceAddress, this);
+				parent.changeBluetoothConnection(bc);
+				zapiszConfig();
 
-		} else System.err.println("Wywolanie connectToDevice() przy device==null");
+			} else System.err.println("Wywolanie connectToDevice() przy device==null"); //nie powinno wystapic
+		} else System.err.println("Wywolanie connectToDevice() bez RobotMaster"); //tu trzeba uwazac, nie przewidzailem wszzystkich sytuacji
 	}
 
 	private void updateDeviceInfo() {
@@ -316,6 +338,15 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		} else if (e.getSource()==exitItem) {
 			tray.remove(trayIcon);
 			System.exit(0);
+		} else if (e.getSource()==connectButton) {
+			if (deviceAddress!=null) {
+				connectToDevice();
+			} else {
+				JOptionPane.showMessageDialog(this,
+						"Nie wybrano urządzenia.",
+						"Informacja",
+						JOptionPane.INFORMATION_MESSAGE);
+			}
 		}
 
 	}
