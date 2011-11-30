@@ -63,6 +63,7 @@ public class BluetoothConnection extends Observable
 		try {
 			setStatus(BluetoothConnection.STATUS_CONNECTING);
 			String deviceURL = "btspp://"+device.getBluetoothAddress()+":1;authenticate=false;encrypt=false;master=false";
+			System.out.println("Łączenie z ");
 			conn = (StreamConnection) Connector.open(deviceURL);
 			istream = conn.openInputStream();
 			ostream = conn.openOutputStream();
@@ -76,6 +77,8 @@ public class BluetoothConnection extends Observable
 				setStatus(BluetoothConnection.STATUS_OK);
 			}
 			
+			System.out.println("Połączono");
+			
 		} catch (IOException e) {
 			setStatus(BluetoothConnection.STATUS_DISCONNECTED);
 			e.printStackTrace();
@@ -88,6 +91,7 @@ public class BluetoothConnection extends Observable
 		{
 			setStatus(BluetoothConnection.STATUS_CONNECTING);
 			String deviceURL = "btspp://"+addr+":1;authenticate=false;encrypt=false;master=false";
+			System.out.println("Łączenie z ");
 			conn = (StreamConnection) Connector.open(deviceURL);
 			istream = conn.openInputStream();
 			ostream = conn.openOutputStream();
@@ -102,6 +106,8 @@ public class BluetoothConnection extends Observable
 			}
 			else
 				setStatus(BluetoothConnection.STATUS_OK);
+			
+			System.out.println("Połączono");
 		}
 		catch (IOException e)
 		{
@@ -142,7 +148,7 @@ public class BluetoothConnection extends Observable
 	
 	public void send(byte[] msg) {
 		try {
-			System.out.println("Imma sending an array: " + Arrays.toString(msg));
+			System.out.println("Wysłano do robota: " + Arrays.toString(msg));
 			ostream.write(msg.length%256);
 			ostream.write(msg.length/256);
 			ostream.write(msg);

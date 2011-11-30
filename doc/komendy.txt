@@ -1,11 +1,14 @@
 ﻿motor
 A|B|C
-direction=(forward|backwards|stop)
-power=(0-100) // power, brak jeśli stop
-unlimited|seconds=x|degrees=x|rotations=x // brak jeśli stop
+direction=(forward|backwards)
+power=(0-100)
+unlimited|seconds=x|degrees=x|rotations=x
 
 motor-hard-brake
-A|B|C
+A|B|C|ALL
+
+motor-stop
+A|B|C|ALL
 
 get-motor-state
 A|B|C
@@ -25,5 +28,5 @@ reset-sensor-scaled
 1|2|3|4
 
 reset-motor-position
-A|B|C
+A|B|C|ALL
 [absolute]

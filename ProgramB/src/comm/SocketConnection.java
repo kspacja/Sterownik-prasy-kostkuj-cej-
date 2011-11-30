@@ -72,7 +72,7 @@ public class SocketConnection implements Runnable
 				returnAddress = packet.getSocketAddress();
 			}
 			
-			System.out.println("Received a packet: " + fromBytearray(packet.getData()));
+			System.out.println("Otrzymano przez port UDP: " + fromBytearray(packet.getData()));
 			
 			// Zeruję bufor długości
 			java.util.Arrays.fill(lenbuf, (byte)0);
@@ -119,7 +119,7 @@ public class SocketConnection implements Runnable
 	
 	public synchronized void reply(String msg) throws IOException
 	{
-		System.out.println("Packet sent: " + msg);
+		System.out.println("Wysłano przez port UDP: " + msg);
 		reply(toBytearray(msg));
 	}
 	

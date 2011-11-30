@@ -263,11 +263,9 @@ public class RobotMaster implements Runnable
 							powmod = 1;
 						else if(arg[1].equalsIgnoreCase("backwards"))
 							powmod = -1;
-						else if(arg[1].equalsIgnoreCase("stop"))
-							powmod = 0;
 						else
 							throw new ParserException("Unknown direction" + arg[1] +
-								", should be 'forward', 'backwards', 'stop'");
+								", should be 'forward', 'backwards'");
 					}
 					else if(arg[0].equalsIgnoreCase("power"))
 					{
@@ -296,8 +294,7 @@ public class RobotMaster implements Runnable
 			motor(abc, (byte)(pow*powmod),
 					(byte)(Constants.MOTOR_MODE_ON | Constants.MOTOR_MODE_BRAKE),
 					Constants.MOTOR_REG_IDLE, (byte)0,
-					powmod != 0 ? Constants.MOTOR_RUNSTATE_RUNNING : Constants.MOTOR_RUNSTATE_IDLE,
-					tacholimit);
+					Constants.MOTOR_RUNSTATE_RUNNING, tacholimit);
 				//TODO 0x20 - Teraz tylko running, potem dodać inne tryby
 			}
 		else if(args[0].equalsIgnoreCase("get-motor-state"))
@@ -309,10 +306,8 @@ public class RobotMaster implements Runnable
 				abc = Constants.MOTOR_B;
 			else if(args[1].equalsIgnoreCase("C"))
 				abc = Constants.MOTOR_C;
-			else if(args[1].equalsIgnoreCase("ALL"))
-				abc = Constants.MOTOR_ALL;
 			else
-				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
+				throw new ParserException("Unknown motor label (should be 'A', 'B' or 'C')");
 			
 			getMotorState(abc);
 		}
@@ -499,6 +494,23 @@ public class RobotMaster implements Runnable
 			motor(abc, (byte)0, (byte)(Constants.MOTOR_MODE_BRAKE | Constants.MOTOR_MODE_ON |
 					Constants.MOTOR_MODE_REG), Constants.MOTOR_REG_SPEED,
 					(byte)0, Constants.MOTOR_RUNSTATE_RUNNING, (short)0);
+		}
+		else if(args[0].equalsIgnoreCase("motor-stop"))
+		{
+			byte abc;
+			if(args[1].equalsIgnoreCase("A"))
+				abc = Constants.MOTOR_A;
+			else if(args[1].equalsIgnoreCase("B"))
+				abc = Constants.MOTOR_B;
+			else if(args[1].equalsIgnoreCase("C"))
+				abc = Constants.MOTOR_C;
+			else if(args[1].equalsIgnoreCase("ALL"))
+				abc = Constants.MOTOR_ALL;
+			else
+				throw new ParserException("Unknown motor label (should be 'A', 'B', 'C' or 'ALL')");
+			
+			motor(abc, (byte)0, Constants.MOTOR_MODE_ON, Constants.MOTOR_REG_IDLE,
+					(byte)0, Constants.MOTOR_RUNSTATE_IDLE, (short)0);
 		}
 		else
 			throw new ParserException("Unknown command: "+args[0]);
