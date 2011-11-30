@@ -18,7 +18,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.regex.Pattern;
+import java.util.Properties;
 
 import javax.bluetooth.RemoteDevice;
 import javax.swing.BorderFactory;
@@ -37,14 +37,20 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	private static final long serialVersionUID = -3722504484672472629L;
 	private final String configFile = "nxt.conf";
+	final Properties config = new Properties();
+	// Stałe dla pól pliku konfiguracyjnego
+	static final String CONF_DEV_ADDR = "Device_address";
+	static final String CONF_DEV_NAME = "Device_name";
+	static final String CONF_PORT = "Listening_port";
+	static final String CONF_TIMEOUT = "Bluetooth_timeout";
 
-	RobotMaster parent;
-	String deviceAddress;
-	String deviceName;
-	BluetoothConnection bc;
+	private RobotMaster parent;
+	private String deviceAddress;
+	private String deviceName;
+	private BluetoothConnection bc;
 
 
-	ImageIcon goodIcon, badIcon, noneIcon, procIcon;
+	private ImageIcon goodIcon, badIcon, noneIcon, procIcon;
 
 	//device
 	private javax.swing.JPanel devicePanel;
@@ -67,8 +73,8 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	private PopupMenu popup;
 	private TrayIcon trayIcon;
 	private SystemTray tray;
-	MenuItem aboutItem;
-	MenuItem exitItem;
+	private MenuItem aboutItem;
+	private MenuItem exitItem;
 
 
 	public NxtBluetoothGUI() {
@@ -124,12 +130,20 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		initComponents();
 
 		wczytajConfig();
-
+		
 		updateDeviceInfo();
+		updateConnectionLabel();
 	}
 	
 	public void setParent(RobotMaster parent) {
 		this.parent = parent;
+	}
+	
+	public void setDeviceAddress(String addr)
+	{
+		deviceAddress = addr;
+		deviceName = null; // Niestety nie mamy tutaj nazwy urządzenia
+		updateDeviceInfo();
 	}
 
 	private void wczytajConfig() {
@@ -139,20 +153,10 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		if (cnfFile.exists()) {
 			try {
 				BufferedReader in = new BufferedReader(new FileReader(cnfFile));
-				String line;
-				while ((line = in.readLine()) != null) {
-					// Do odczytania uzywam wyrazenia regularnego
-					Pattern p = Pattern.compile("=");
-					String[] result = p.split(line);
-					if (result.length == 2) {
-						if (result[0].equals("Device address")) {
-							deviceAddress=result[1];
-						} else if (result[0].equals("Device name")) {
-							deviceName=result[1];
-						}
-					} else System.out.println("Niepoprawny wpis w pliku konfiguracyjnym.");
-				}
+				config.load(in);
 				in.close();
+				deviceAddress = config.getProperty(CONF_DEV_ADDR);
+				deviceName = config.getProperty(CONF_DEV_NAME);
 			} catch (IOException e) {
 			}
 		}
@@ -163,15 +167,13 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		File cnfFile = new File(configFile);
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(cnfFile));
-			out.write("Device address="+deviceAddress);
-			if (deviceName!=null)
-				out.write("Device name="+deviceName);
+			config.store(out, null);
 			out.close();
 		} catch (IOException e) {
 		}
 
 	}
-
+	
 	// Pomocnicza metoda tworzaca obiekt ImageIcon ze sciezki wzglednej
 	protected ImageIcon createImageIcon(String path) {
 		java.net.URL imgURL = getClass().getResource(path);
@@ -253,9 +255,6 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		add(devicePanel, BorderLayout.NORTH);
 		add(connectionPanel, BorderLayout.CENTER);
 
-		updateDeviceInfo();
-		updateConnectionLabel();
-
 		pack();
 		setMinimumSize(getSize());
 	}
@@ -276,10 +275,15 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	}
 
 	public void connectToDevice() {
-		if (deviceAddress!=null) {
+		if (parent!=null) {
 			if (deviceAddress!=null) {
 				bc = new BluetoothConnection(deviceAddress, this);
 				parent.changeBluetoothConnection(bc);
+				
+				if(deviceAddress != null)
+					config.setProperty(CONF_DEV_ADDR, deviceAddress);
+				if(deviceName != null)
+					config.setProperty(CONF_DEV_NAME, deviceName);
 				zapiszConfig();
 
 			} else System.err.println("Wywolanie connectToDevice() przy device==null"); //nie powinno wystapic

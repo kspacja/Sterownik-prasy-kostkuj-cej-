@@ -1,7 +1,6 @@
 package comm;
 
 import java.io.IOException;
-import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
@@ -602,34 +601,92 @@ public class RobotMaster implements Runnable
 		return res;
 	}
 
-	//TODO To jest tylko procedura testowa, prawdziwy main będzie inny!
-	public static void main(String[] args) throws SocketException, IOException
+	public static void main(String[] args)
 	{
-		// Jeden argument obowiązkowy (numer portu), dwa opcjonalne (adres robota, timeout)
-		// W takiej kolejności
 		
-		if(args.length == 0)
+		// Argumenty postaci port=666 device_address=12334567 timeout=300
+		// Żaden nie jest obowiązkowy
+		Integer port = null;
+		Integer tout = null;
+		String addr = null;
+		
+		boolean fromArgs = false;
+		
+		for(String arg: args)
 		{
-			System.err.println("Podaj numer portu");
-			System.exit(1);
+			String[] kv = arg.split("=");
+			if(kv.length < 2)
+				System.err.println("Ostrzeżenie: Jeden z argumentów linii komend jest źle sformatowany");
+			else
+				try
+				{
+					if(kv[0].equalsIgnoreCase("port"))
+						port = Integer.parseInt(kv[1]);
+					else if(kv[0].equalsIgnoreCase("device_address"))
+						addr = kv[1];
+					else if(kv[0].equalsIgnoreCase("timeout"))
+						tout = Integer.parseInt(kv[1]);
+					else
+						System.err.println("Ostrzeżenie: Jeden z argumentów linii komend jest źle sformatowany");
+				}
+				catch(NumberFormatException e)
+				{
+					System.err.println("Ostrzeżenie: Oczekiwano liczby całkowitej jako wartości argumentu");
+				}
 		}
 		
-		SocketConnection soc = new SocketConnection(Integer.parseInt(args[0]));
-		String addr = args.length >= 2 ? args[1] : null;
-		Integer timeout = args.length >= 3 ? Integer.parseInt(args[2]) : null;
-		
-		RobotMaster master = timeout == null ? new RobotMaster(soc):
-			new RobotMaster(soc, timeout);
 		NxtBluetoothGUI gui = new NxtBluetoothGUI();
-		gui.setParent(master);
+		
+		// Próbuję pobrać wartości z configu, lub nadpisuję jeśli użytkownik podał inne
+		if(addr == null)
+			addr = gui.config.getProperty(NxtBluetoothGUI.CONF_DEV_ADDR);
+		else
+		{
+			gui.config.setProperty(NxtBluetoothGUI.CONF_DEV_ADDR, addr);
+			fromArgs = true;
+		}
+		
+		if(port == null)
+		{
+			String tport = gui.config.getProperty(NxtBluetoothGUI.CONF_PORT);
+			if(tport != null)
+				port = Integer.parseInt(tport);
+		}
+		else
+			gui.config.setProperty(NxtBluetoothGUI.CONF_PORT, port.toString());
+		
+		if(tout == null)
+		{
+			String ttout = gui.config.getProperty(NxtBluetoothGUI.CONF_TIMEOUT);
+			if(ttout != null)
+				tout = Integer.parseInt(ttout);
+		}
+		else
+			gui.config.setProperty(NxtBluetoothGUI.CONF_TIMEOUT, tout.toString());
+		
+		if(port != null)
+		{
+			try
+			{
+				SocketConnection sc = new SocketConnection(port);
+				RobotMaster master = tout != null ?
+					new RobotMaster(sc, tout) : new RobotMaster(sc);
+				gui.setParent(master);
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				System.exit(1);
+			}
+		}
 		
 		if(addr != null)
-		{
-			BluetoothConnection bt = new BluetoothConnection(addr, gui);
-			gui.swapConnection(bt);
-		}
+			gui.setDeviceAddress(addr);
 		
-		gui.setVisible(true);
-		
+		// Ukryj GUI, jeśli programowi podano z linii komend adres (a port był ustawiony)
+		if(port != null && fromArgs)
+			gui.connectToDevice();
+		else
+			gui.setVisible(true);
 	}
 }
