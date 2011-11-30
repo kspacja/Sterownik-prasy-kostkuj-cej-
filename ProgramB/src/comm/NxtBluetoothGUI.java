@@ -4,18 +4,23 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.GridLayout;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.SocketException;
+import java.text.NumberFormat;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Properties;
@@ -25,6 +30,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -33,7 +39,7 @@ import javax.swing.border.EtchedBorder;
 import comm.BluetoothConnection;
 import comm.RobotMaster;
 
-public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer {
+public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer, PropertyChangeListener {
 
 	private static final long serialVersionUID = -3722504484672472629L;
 	private final String configFile = "nxt.conf";
@@ -49,6 +55,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	private String deviceName;
 	private BluetoothConnection bc;
 
+	Integer socketPort, timeout;
 
 	private ImageIcon goodIcon, badIcon, noneIcon, procIcon;
 
@@ -63,11 +70,14 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	//connection
 	private javax.swing.JPanel connectionPanel;
 	private javax.swing.JLabel connectionStatusLabel;
-	private javax.swing.JPanel actionPanel;
-	private javax.swing.JLabel actionLabel;
-	
 	private javax.swing.JPanel controlPanel;
 	private javax.swing.JButton connectButton;
+
+	private javax.swing.JPanel inputsPanel;
+	private javax.swing.JLabel portLabel;
+	private javax.swing.JFormattedTextField portField;
+	private javax.swing.JLabel timeoutLabel;
+	private javax.swing.JFormattedTextField timeoutField;
 
 	//tray
 	private PopupMenu popup;
@@ -80,6 +90,8 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 	public NxtBluetoothGUI() {
 		deviceAddress = null;
 		bc = null;
+		socketPort = new Integer(8765);
+		timeout = new Integer(200);
 
 		try { // Ustawiamy look and feel
 			for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -97,7 +109,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		} catch (javax.swing.UnsupportedLookAndFeelException ex) {
 			java.util.logging.Logger.getLogger(NxtBluetoothGUI.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
 		}
-		
+
 
 		setIconImage(createImageIcon("/guiIcon.png").getImage());
 
@@ -108,13 +120,13 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			tray = SystemTray.getSystemTray();
 			aboutItem = new MenuItem("Wyświetl / Ukryj");
 			exitItem = new MenuItem("Zamknij");
-			
+
 			popup.add(aboutItem);
 			popup.add(exitItem);
 			trayIcon.setPopupMenu(popup);
 			trayIcon.setToolTip("Klient NXT Bluetooth");
-            trayIcon.setImageAutoSize(true);
-			
+			trayIcon.setImageAutoSize(true);
+
 			try {
 				tray.add(trayIcon);
 			} catch (AWTException e) {
@@ -126,19 +138,19 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			aboutItem.addActionListener(this);
 
 		}
+		
+		wczytajConfig();
 
 		initComponents();
 
-		wczytajConfig();
-		
 		updateDeviceInfo();
 		updateConnectionLabel();
 	}
-	
+
 	public void setParent(RobotMaster parent) {
 		this.parent = parent;
 	}
-	
+
 	public void setDeviceAddress(String addr)
 	{
 		deviceAddress = addr;
@@ -173,7 +185,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		}
 
 	}
-	
+
 	// Pomocnicza metoda tworzaca obiekt ImageIcon ze sciezki wzglednej
 	protected ImageIcon createImageIcon(String path) {
 		java.net.URL imgURL = getClass().getResource(path);
@@ -227,28 +239,49 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		// Control panel
 		controlPanel = new javax.swing.JPanel();
 		connectButton = new javax.swing.JButton("Połącz");
-		
 		controlPanel.add(connectButton);
 		connectButton.setPreferredSize(new Dimension(120, 28));
 		connectButton.addActionListener(this);
-		
+
+		// Inputs panel
+		inputsPanel = new javax.swing.JPanel();
+		inputsPanel.setLayout(new GridLayout(1,4,10,1));
+		NumberFormat portFormat = NumberFormat.getNumberInstance();
+		portFormat.setParseIntegerOnly(true);
+		portField = new JFormattedTextField(portFormat);
+		portField.setValue(socketPort);
+		portField.setColumns(7);
+		portField.addPropertyChangeListener("value",this);
+		portLabel = new JLabel("Port socket");
+		portLabel.setLabelFor(portField);
+		inputsPanel.add(portLabel);
+		inputsPanel.add(portField);
+		NumberFormat timeoutFormat = NumberFormat.getNumberInstance();
+		timeoutFormat.setParseIntegerOnly(true);
+		timeoutField = new JFormattedTextField(portFormat);
+		timeoutField.setAlignmentX(JFormattedTextField.RIGHT);
+		timeoutField.setValue(timeout);
+		timeoutField.setColumns(7);
+		timeoutField.addPropertyChangeListener("value",this);
+		timeoutLabel = new JLabel("Timeout");
+		timeoutLabel.setLabelFor(		timeoutField);
+		inputsPanel.add(timeoutLabel);
+		inputsPanel.add(timeoutField);
+
 		// Connection panel
 		connectionPanel = new javax.swing.JPanel();
 		connectionStatusLabel = new javax.swing.JLabel();
-		actionPanel = new javax.swing.JPanel();
-		actionLabel = new javax.swing.JLabel();
 
 		//		connectionPanel.setLayout(new BoxLayout(connectionPanel, BoxLayout.Y_AXIS));
 		connectionPanel.setLayout(new BorderLayout());
-		connectionPanel.setPreferredSize(new Dimension(400,100));
+		connectionPanel.setPreferredSize(new Dimension(480,150));
 		connectionStatusLabel.setHorizontalAlignment(JLabel.CENTER);
 		connectionStatusLabel.setIconTextGap(15);
 		connectionStatusLabel.setFont(new Font(null, Font.PLAIN, 25));
-		actionPanel.add(actionLabel);
 
 		connectionPanel.add(connectionStatusLabel, BorderLayout.CENTER);
 		connectionPanel.add(controlPanel, BorderLayout.EAST);
-		connectionPanel.add(actionLabel, BorderLayout.SOUTH);
+		connectionPanel.add(inputsPanel, BorderLayout.SOUTH);
 
 		// Wrzuc wszystko na contentpane
 		setLayout(new BorderLayout());
@@ -261,16 +294,13 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 
 	//	wywolywane z selectdevice
 	public void changeDevice(RemoteDevice d) {
-		String adres = d.getBluetoothAddress();
-		if (deviceAddress == null || !deviceAddress.equals(adres)) {
-			try {
-				deviceAddress = d.getBluetoothAddress();
-				deviceName = d.getFriendlyName(false);
-				updateDeviceInfo();
-				connectToDevice();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+		try {
+			deviceAddress = d.getBluetoothAddress();
+			deviceName = d.getFriendlyName(false);
+			updateDeviceInfo();
+			connectToDevice();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -279,7 +309,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 			if (deviceAddress!=null) {
 				bc = new BluetoothConnection(deviceAddress, this);
 				parent.changeBluetoothConnection(bc);
-				
+
 				if(deviceAddress != null)
 					config.setProperty(CONF_DEV_ADDR, deviceAddress);
 				if(deviceName != null)
@@ -376,5 +406,44 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer 
 		}
 		updateDeviceInfo();
 		parent.changeBluetoothConnection(bt);
+	}
+
+	public void newParent(int port)
+	{
+		SocketConnection sc;
+		try {
+			sc = new SocketConnection(port);
+			setParent(new RobotMaster(sc, timeout));
+		} catch (SocketException e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent pce) {
+		Object source = pce.getSource();
+		if (source == portField) {
+			int val = ((Number)portField.getValue()).intValue();
+			if (0<val && val<=65535) {
+				socketPort = val;
+			} else {
+				portField.setValue(socketPort);
+				JOptionPane.showMessageDialog(this,
+						"Wybierz numer portu z zakresu 0 - 65535.",
+						"Informacja",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		} else if (source == timeoutField) {
+			int val = ((Number)timeoutField.getValue()).intValue();
+			if (0<val) {
+				timeout = val;
+			} else {
+				timeoutField.setValue(socketPort);
+				JOptionPane.showMessageDialog(this,
+						"Wybierz timeout w ms.",
+						"Informacja",
+						JOptionPane.WARNING_MESSAGE);
+			}
+		}
 	}
 }
