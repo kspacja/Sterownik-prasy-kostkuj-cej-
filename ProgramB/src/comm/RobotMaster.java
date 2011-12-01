@@ -692,7 +692,7 @@ public class RobotMaster implements Runnable
 			}
 		}
 		
-		if(addr != null)
+		if(addr != null && fromArgs)
 			gui.setDeviceAddress(addr);
 		
 		// Ukryj GUI, jeśli programowi podano z linii komend adres (a port był ustawiony)
