@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 public class SocketConnection implements Runnable
 {
-	private DatagramSocket socket;
+	DatagramSocket socket;
 	// Wątek, który nasłuchuje wiadomości z socketa i umieszcza je w kolejce
 	private Thread socketReader;
 	// Adres zwrotny, czyli ostatni adres z którego przyszedł jakiś pakiet
@@ -30,7 +30,7 @@ public class SocketConnection implements Runnable
 	@Override
 	public void run()
 	{
-		while(true)
+		while(!socket.isClosed())
 		{
 			DatagramPacket lenpacket = new DatagramPacket(lenbuf, lenbuf.length);
 			
@@ -41,9 +41,14 @@ public class SocketConnection implements Runnable
 			}
 			catch(IOException e)
 			{
-				System.err.println("!! Receiving a packet failed");
-				e.printStackTrace();
-				continue;
+				if(!socket.isClosed())
+				{
+					System.err.println("!! Receiving a packet failed");
+					e.printStackTrace();
+					continue;
+				}
+				else
+					break;
 			}
 			
 			int len = (lenpacket.getData()[0] << (3*8)) |
@@ -61,9 +66,14 @@ public class SocketConnection implements Runnable
 			}
 			catch(IOException e)
 			{
-				System.err.println("!! Receiving a packet failed");
-				e.printStackTrace();
-				continue;
+				if(!socket.isClosed())
+				{
+					System.err.println("!! Receiving a packet failed");
+					e.printStackTrace();
+					continue;
+				}
+				else
+					break;
 			}
 			
 			synchronized(this)

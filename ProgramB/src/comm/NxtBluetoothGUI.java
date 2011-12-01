@@ -374,6 +374,16 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 			System.exit(0);
 		} else if (e.getSource()==connectButton) {
 			if (deviceAddress!=null) {
+				if(parent == null)
+					try
+					{
+						parent = new RobotMaster(new SocketConnection(socketPort), timeout);
+					}
+					catch(SocketException e1)
+					{
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 				connectToDevice();
 			} else {
 				JOptionPane.showMessageDialog(this,
