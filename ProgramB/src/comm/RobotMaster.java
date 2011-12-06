@@ -115,8 +115,8 @@ public class RobotMaster implements Runnable
 								{
 									if(mustAns)
 										ss.reply(parseReply(ans));
-//									else
-//										ss.reply("OK Robot");
+									else
+										ss.reply("OK");
 								}
 								else
 									ss.reply("Robot Error: " + ans[2]);
@@ -143,7 +143,7 @@ public class RobotMaster implements Runnable
 	{
 		synchronized(this)
 		{
-			if (bt!=null) bt.finalize();
+			if (bt!=null) bt.close();
 			bt = b;
 		}
 		
