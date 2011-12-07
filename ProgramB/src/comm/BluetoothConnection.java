@@ -1,5 +1,6 @@
 package comm;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,8 +12,10 @@ import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
-public class BluetoothConnection extends Observable
+public class BluetoothConnection extends Observable implements Closeable
 {
+	private Thread closer; // Wątek zamykający połączenie, dla ShutdownHook
+	
 	public static final int STATUS_CONNECTING = 2;
 	public static final int STATUS_OK = 1;
 	public static final int STATUS_DISCONNECTED = 0;
@@ -36,12 +39,16 @@ public class BluetoothConnection extends Observable
 		setError(ERROR_NONE);
 		addObserver(observer);
 		connectTo(device);
+		
+		registerClose(this);
 	}
 	
 	public BluetoothConnection(RemoteDevice device) {
 		setStatus(BluetoothConnection.STATUS_DISCONNECTED);
 		setError(ERROR_NONE);
 		connectTo(device);
+		
+		registerClose(this);
 	}
 	
 	public BluetoothConnection(String addr, Observer observer)
@@ -50,6 +57,8 @@ public class BluetoothConnection extends Observable
 		setError(ERROR_NONE);
 		addObserver(observer);
 		connectTo(addr);
+		
+		registerClose(this);
 	}
 	
 	public BluetoothConnection(String addr)
@@ -57,6 +66,20 @@ public class BluetoothConnection extends Observable
 		setStatus(BluetoothConnection.STATUS_DISCONNECTED);
 		setError(ERROR_NONE);
 		connectTo(addr);
+		
+		registerClose(this);
+	}
+	
+	private static void registerClose(final BluetoothConnection bt)
+	{
+		bt.closer = new Thread(new Runnable(){
+			public void run()
+			{
+				bt.close();
+			}
+		});
+		
+		Runtime.getRuntime().addShutdownHook(bt.closer);
 	}
 	
 	public void connectTo(RemoteDevice device) {
@@ -135,14 +158,16 @@ public class BluetoothConnection extends Observable
 	}
 	
 	@Override
-	public void finalize()
+	public void close()
 	{
 		try
 		{
 			if (conn!=null) conn.close();
 		}
 		// I tak już kończymy, nie ma znaczenia co stanie się z tym połączeniem
-		catch(IOException e){}
+		catch(IOException e)
+		{}
+		
 		deleteObservers();
 	}
 	

@@ -6,8 +6,6 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
-import java.util.LinkedList;
-
 
 public class Main {
 
@@ -17,18 +15,29 @@ public class Main {
 	public static void main(String[] args) {
 		StringBuilder commandList = new StringBuilder();
 		int waitTime = 0;
+		int port = 65500;
 		
 		for (int i = 0; i < args.length; i++){
-			if (args[i].compareTo("-t") == 0 ){ //if wait time is setted
+			if (args[i].equals("-t")){ //if wait time is setted
 				i++; //go to next argument
 				try {
-					if (args.length > 1) waitTime = Integer.parseInt(args[i]);
+					/*if (args.length > 1)*/ waitTime = Integer.parseInt(args[i]);
 				}
 				catch(NumberFormatException e){
 					System.err.println("Time of waiting has to be integer");
 					System.exit(0); //in case of error exit app
 				}
 			}
+			else if(args[i].equals("-p"))
+				try
+				{
+					port = Integer.parseInt(args[i++]);
+				}
+				catch(NumberFormatException e)
+				{
+					System.err.println("Port has to be integer");
+					System.exit(0); //in case of error exit app
+				}
 			else commandList.append(args[i] + " "); //add command
 		}
 		if (commandList.length() < 1) { //if there is no command exit app
@@ -54,12 +63,12 @@ public class Main {
 	        
 	        InetAddress address = InetAddress.getByName("localhost");
 	        
-	        DatagramPacket packet = new DatagramPacket(len, len.length, address, 6666);
+	        DatagramPacket packet = new DatagramPacket(len, len.length, address, port);
 	        socket.send(packet);
 	        
 	        buf = commandList.toString().getBytes();
 	        
-	        packet = new DatagramPacket(buf, buf.length, address, 6666);
+	        packet = new DatagramPacket(buf, buf.length, address, port);
 	        socket.send(packet);
 	        
 	        // only wait for reply if the user specified how long
@@ -73,16 +82,7 @@ public class Main {
 	     		// So we wait three times
 	     		
 	     		try
-	     		{
-	     			//for(int i=0; i<2; ++i)
-	     			//{
-	     			
-	     			
-	     			//FIXME This is too late
-	     			// The command status slips through
-	     			// We may try and disregard this,
-	     			// it'll catch the answer anyway
-	     			
+	     		{	
 	     			// We'll just catch one answer, never mind the rest
 
 	     			// receive length
@@ -101,13 +101,8 @@ public class Main {
 	     			socket.receive(packet);
 
 	     			String toPrint = new String(packet.getData());
-	     			if(!toPrint.startsWith("OK"))
-	     				System.out.println(toPrint);
-
-	     			//TODO Recognize if the message will expect a reply
-	     			// and skip the third wait if it does not
-	     				
-	     			//}
+	     			//if(!toPrint.startsWith("OK"))
+	     			System.out.println(toPrint);
 	     		}
 	     		catch(SocketTimeoutException e)
 	     		{
@@ -124,14 +119,8 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
- 
-		
-		
 		//System.out.println("Wait time: " + waitTime);
 		
-		
 		System.exit(0);
-		
 	}
-
 }

@@ -11,6 +11,10 @@ import java.util.LinkedList;
 
 public class SocketConnection implements Runnable
 {
+	// Służy do ochrony programu przed śmieciami przychodzącymi na port,
+	// które są interpretowane długość większa niż Java heap space
+	private static final int MAXLEN = 1024;
+	
 	DatagramSocket socket;
 	// Wątek, który nasłuchuje wiadomości z socketa i umieszcza je w kolejce
 	private Thread socketReader;
@@ -33,7 +37,7 @@ public class SocketConnection implements Runnable
 		while(!socket.isClosed())
 		{
 			DatagramPacket lenpacket = new DatagramPacket(lenbuf, lenbuf.length);
-			
+
 			// Oczekuje na otrzymanie pakietu z długością komendy
 			try
 			{
@@ -50,46 +54,51 @@ public class SocketConnection implements Runnable
 				else
 					break;
 			}
-			
+
 			int len = (lenpacket.getData()[0] << (3*8)) |
 					(lenpacket.getData()[1] << (2*8)) |
 					(lenpacket.getData()[2] << 8) |
 					lenpacket.getData()[3];
-			
-			// Oczekuje na otrzymanie właściwego pakietu
-			byte[] buf = new byte[len];
-			DatagramPacket packet = new DatagramPacket(buf, buf.length);
-			
-			try
+
+			if(len > MAXLEN)
+				System.out.println("!? Received packet is too long -- dropped");
+			else
 			{
-				socket.receive(packet);
-			}
-			catch(IOException e)
-			{
-				if(!socket.isClosed())
+				// Oczekuje na otrzymanie właściwego pakietu
+				byte[] buf = new byte[len];
+				DatagramPacket packet = new DatagramPacket(buf, buf.length);
+
+				try
 				{
-					System.err.println("!! Receiving a packet failed");
-					e.printStackTrace();
-					continue;
+					socket.receive(packet);
 				}
-				else
-					break;
-			}
-			
-			synchronized(this)
-			{
-				fromSocket.add(packet.getData());
-				returnAddress = packet.getSocketAddress();
-			}
-			
-			System.out.println("Otrzymano przez port UDP: " + fromBytearray(packet.getData()));
-			
-			// Zeruję bufor długości
-			java.util.Arrays.fill(lenbuf, (byte)0);
-			// Pobudza wątek czekający na żądania z socketu
-			synchronized(this)
-			{
-				notify();
+				catch(IOException e)
+				{
+					if(!socket.isClosed())
+					{
+						System.err.println("!! Receiving a packet failed");
+						e.printStackTrace();
+						continue;
+					}
+					else
+						break;
+				}
+
+				synchronized(this)
+				{
+					fromSocket.add(packet.getData());
+					returnAddress = packet.getSocketAddress();
+				}
+
+				System.out.println("Otrzymano przez port UDP: " + fromBytearray(packet.getData()));
+
+				// Zeruję bufor długości
+				java.util.Arrays.fill(lenbuf, (byte)0);
+				// Pobudza wątek czekający na żądania z socketu
+				synchronized(this)
+				{
+					notify();
+				}
 			}
 		}
 	}
