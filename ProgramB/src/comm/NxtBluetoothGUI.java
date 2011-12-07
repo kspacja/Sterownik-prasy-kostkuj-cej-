@@ -138,7 +138,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 			aboutItem.addActionListener(this);
 
 		}
-		
+
 		wczytajConfig();
 
 		initComponents();
@@ -169,6 +169,8 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 				in.close();
 				deviceAddress = config.getProperty(CONF_DEV_ADDR);
 				deviceName = config.getProperty(CONF_DEV_NAME);
+				socketPort = Integer.valueOf(config.getProperty(CONF_PORT));
+				timeout = Integer.valueOf(config.getProperty(CONF_TIMEOUT));
 			} catch (IOException e) {
 			}
 		}
@@ -198,7 +200,7 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 	}
 
 	private void initComponents() {
-		setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 		setTitle("Program B GUI");
 
 		//		Prerequisites
@@ -298,7 +300,6 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 			deviceAddress = d.getBluetoothAddress();
 			deviceName = d.getFriendlyName(false);
 			updateDeviceInfo();
-			connectToDevice();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -314,6 +315,10 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 					config.setProperty(CONF_DEV_ADDR, deviceAddress);
 				if(deviceName != null)
 					config.setProperty(CONF_DEV_NAME, deviceName);
+				if(socketPort != null)
+					config.setProperty(CONF_PORT, socketPort.toString());
+				if(timeout != null)
+					config.setProperty(CONF_TIMEOUT, timeout.toString());
 				zapiszConfig();
 
 			} else System.err.println("Wywolanie connectToDevice() przy device==null"); //nie powinno wystapic
@@ -374,17 +379,16 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 			System.exit(0);
 		} else if (e.getSource()==connectButton) {
 			if (deviceAddress!=null) {
-				if(parent == null)
-					try
-					{
+				try	{
+					if(parent == null) 
 						parent = new RobotMaster(new SocketConnection(socketPort), timeout);
-					}
-					catch(SocketException e1)
-					{
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				connectToDevice();
+					connectToDevice();
+				} catch(SocketException e1) {
+					JOptionPane.showMessageDialog(this,
+							"Port jest zajęty. Wybierz inny",
+							"Błąd",
+							JOptionPane.ERROR_MESSAGE);
+				}
 			} else {
 				JOptionPane.showMessageDialog(this,
 						"Nie wybrano urządzenia.",
