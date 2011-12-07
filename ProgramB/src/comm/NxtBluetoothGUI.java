@@ -169,8 +169,8 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 				in.close();
 				deviceAddress = config.getProperty(CONF_DEV_ADDR);
 				deviceName = config.getProperty(CONF_DEV_NAME);
-				socketPort = Integer.valueOf(config.getProperty(CONF_PORT));
-				timeout = Integer.valueOf(config.getProperty(CONF_TIMEOUT));
+				socketPort = Integer.parseInt(config.getProperty(CONF_PORT, "65500"));
+				timeout = Integer.parseInt(config.getProperty(CONF_TIMEOUT, "200"));
 			} catch (IOException e) {
 			}
 		}
