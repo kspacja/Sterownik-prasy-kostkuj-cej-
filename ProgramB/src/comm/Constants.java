@@ -1,5 +1,8 @@
 package comm;
 
+/**
+ * Klasa zawiera stałe wartości używane w komendach dla robota
+ */
 public class Constants
 {
 	public static final byte MOTOR_A = 0;

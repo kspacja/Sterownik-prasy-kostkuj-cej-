@@ -12,6 +12,15 @@ import javax.bluetooth.RemoteDevice;
 import javax.microedition.io.Connector;
 import javax.microedition.io.StreamConnection;
 
+/**
+ * Klasa odpowiedzialna za nawiązanie i utrzymanie połączenia Bluetooth z robotem
+ * Pozwala na wysyłanie i otrzymywanie wiadomości od robota. Ta klasa obsługuje
+ * protokół używany przez kostkę Lego NXT
+ * 
+ * Obiekty tej klasy generalnie nie generują wyjątków, w przypadku wystąpienia błędu
+ * połączenia ustawiane są odpowiednie zmienne wewnętrzne, których wartość można odczytać
+ * za pomocą <code>getStatus</code> i <code>getError</code>
+ */
 public class BluetoothConnection extends Observable implements Closeable
 {
 	private Thread closer; // Wątek zamykający połączenie, dla ShutdownHook
@@ -61,6 +70,9 @@ public class BluetoothConnection extends Observable implements Closeable
 		registerClose(this);
 	}
 	
+	/**
+	 * @param addr Adres urządzenia Bluetooth, z którym ma być nawiązane połączenie
+	 */
 	public BluetoothConnection(String addr)
 	{
 		setStatus(BluetoothConnection.STATUS_DISCONNECTED);
@@ -108,6 +120,10 @@ public class BluetoothConnection extends Observable implements Closeable
 		}
 	}
 	
+	/**
+	 * Nawiązuje połączenie z wybranym urządzeniem Bluetooth
+	 * @param addr Adres urządzenia, do z którym ma być nawiązane połączenie 
+	 */
 	public void connectTo(String addr)
 	{
 		try
@@ -139,6 +155,10 @@ public class BluetoothConnection extends Observable implements Closeable
 		}
 	}
 	
+	/**
+	 * Sprawdza status połączenia
+	 * @return Stan połączenia (jedna ze stałych klasowych)
+	 */
 	public int getStatus() {
 		return status;
 	}
@@ -149,6 +169,11 @@ public class BluetoothConnection extends Observable implements Closeable
 		notifyObservers();
 	}
 	
+	/**
+	 * Sprawdza, na jakim etapie łączenia wystąpił błąd. Wywołanie tej metody ma sens jedynie gdy
+	 * <code>getStatus</code> zwraca wartość <code>STATUS_ERROR</code>
+	 * @return Rodzaj błędu (jedna ze stałych klasowych)
+	 */
 	public int getError() {
 		return error;
 	}
@@ -171,6 +196,10 @@ public class BluetoothConnection extends Observable implements Closeable
 		deleteObservers();
 	}
 	
+	/**
+	 * Wysyła wiadomość do urządzenia z którym nawiązano połączenie
+	 * @param msg Wiadomość w postaci ciągu bajtów
+	 */
 	public void send(byte[] msg) {
 		try {
 			System.out.println("Wysłano do robota: " + Arrays.toString(msg));
@@ -188,8 +217,7 @@ public class BluetoothConnection extends Observable implements Closeable
 	/**
 	 * Metoda odczytuje i zwraca dokładnie jedną wiadomość od robota, nawet jeśli
 	 * oczekujących w strumieniu jest więcej.
-	 * @return wiadomość od robota, null jeśli nie ma żadnej oczekującej
-	 * @throws IOException
+	 * @return wiadomość od robota w postaci ciągu bajtów, <code>null</code> jeśli nie ma żadnej oczekującej
 	 */
 	public byte[] receive() {
 		byte[] res = null;
@@ -213,7 +241,9 @@ public class BluetoothConnection extends Observable implements Closeable
 		return res;
 	}
 	
-	// Pozbywa się wszystkich danych, które zalegają w buforze
+	/**
+	 * Pozbywa się nieodczytanych wiadomości zalegających w buforze wejściowym
+	 */
 	public void clearInput()
 	{
 		try
@@ -228,6 +258,9 @@ public class BluetoothConnection extends Observable implements Closeable
 		}
 	}
 	
+	/**
+	 * @return Obiekt klasy <code>javax.bluetooth.RemoteDevice</code> odnoszący się do urządzenia z którym jest nawiązane połączenie
+	 */
 	public RemoteDevice getDevice()
 	{
 		try

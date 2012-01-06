@@ -9,21 +9,32 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.util.LinkedList;
 
+/**
+ * Umożliwia odbieranie i wysyłanie komunikatów za pomocą protokołu UDP. Ta klasa nasłuchuje
+ * w sposób ciągły na port o wybranym numerze i umieszcza nadchodzące wiadomości w kolejce,
+ * z której mogą one być pobrane za pomocą odpowiednich metod.
+ *
+ * Podstawową funkcją tej klasy jest odbieranie komunikatów. Wysyłanie jest możliwe tylko w
+ * formie odpowiedzi na otrzymane wiadomości, na port z którego nadeszła ostatnia wiadomość.
+ */
 public class SocketConnection implements Runnable
 {
 	// Służy do ochrony programu przed śmieciami przychodzącymi na port,
 	// które są interpretowane długość większa niż Java heap space
 	private static final int MAXLEN = 1024;
 	
-	DatagramSocket socket;
+	private DatagramSocket socket;
 	// Wątek, który nasłuchuje wiadomości z socketa i umieszcza je w kolejce
 	private Thread socketReader;
 	// Adres zwrotny, czyli ostatni adres z którego przyszedł jakiś pakiet
 	private SocketAddress returnAddress = null;
-	private byte[] lenbuf = new byte[4];
-	
+	private byte[] lenbuf = new byte[4];	
 	private LinkedList<byte[]> fromSocket = new LinkedList<byte[]>();
 	
+	/**
+	 * @param port numer portu UDP, na który obiekt będzie nasłuchiwał wiadomości
+	 * @throws SocketException
+	 */
 	public SocketConnection(int port) throws SocketException
 	{
 		socket = new DatagramSocket(port);
@@ -103,21 +114,41 @@ public class SocketConnection implements Runnable
 		}
 	}
 	
+	/**
+	 * Sprawdza, czy w kolejce znajdują się jakieś wiadomości oczekujące na odebranie
+	 * @return <code>true</code> jeśli w kolejce znajdują się wiadomości do odebrania, <code>false</code> wpp.
+	 */
 	public boolean isAvailable()
 	{
 		return !fromSocket.isEmpty();
 	}
 	
+	/**
+	 * Zwraca jedną, najstarszą wiadomość oczekującą w kolejce do odebrania
+	 * TODO sprawdzić, co zwraca removeFirst w przypadku gdy kolejka jest pusta
+	 * @return wiadomość otrzymana w pakiecie, w postaci ciągu bajtów, <code>null</code> jeśli w kolejce nie ma wiadomości
+	 */
 	public synchronized byte[] receive()
 	{
 		return fromSocket.removeFirst();
 	}
 	
+	/**
+	 * Zwraca jedną, najstarszą wiadomość oczekującą w kolejce do odebrania
+	 * skonwertowaną na string
+	 * @return wiadomość otrzymana w pakiecie, w postaci stringa, <code>null</code> jeśli w kolejce nie ma wiadomości
+	 */
 	public synchronized String receiveString()
 	{
 		return fromBytearray(fromSocket.removeFirst());
 	}
 	
+	/**
+	 * Wysyła wiadomość do portu UDP, z którego otrzymano ostatnią wiadomość.
+	 * Jeśli nie otrzymano jeszcze żadnej wiadomości, wywołanie tej metody rzuca wyjątek
+	 * @param msg wiadomość do przesłania w postaci tablicy bajtów
+	 * @throws IOException 
+	 */
 	public synchronized void reply(byte[] msg) throws IOException
 	{
 		if(returnAddress == null)
@@ -136,6 +167,12 @@ public class SocketConnection implements Runnable
 		socket.send(ts);
 	}
 	
+	/**
+	 * Wysyła wiadomość do portu UDP, z którego otrzymano ostatnią wiadomość.
+	 * Jeśli nie otrzymano jeszcze żadnej wiadomości, wywołanie tej metody rzuca wyjątek
+	 * @param msg wiadomość do przesłania w postaci tablicy bajtów
+	 * @throws IOException 
+	 */
 	public synchronized void reply(String msg) throws IOException
 	{
 		System.out.println("Wysłano przez port UDP: " + msg);

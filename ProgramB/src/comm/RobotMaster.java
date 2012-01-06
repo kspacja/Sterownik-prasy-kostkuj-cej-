@@ -5,6 +5,15 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.LinkedList;
 
+/**
+ * Klasa przetwarzająca komendy otrzymywane przez port UDP z postaci tekstowej,
+ * czytelnej dla człowieka, na ciągi bitów
+ * które są następnie wysyłane do robota. Klasa jest też odpowiedzialna za odbieranie odpowiedzi
+ * od robota i przesyłanie ich w czytelnej postaci z powrotem przez port UDP
+ * 
+ * Ta klasa nie udostępnia wielu publicznych metod, ponieważ w niej znajduje się główny wątek
+ * programu, który korzysta z innych klas w programie.
+ */
 public class RobotMaster implements Runnable
 {
 	private Thread robotTalker; // Wątek, który komunikuje się z robotem
@@ -19,6 +28,12 @@ public class RobotMaster implements Runnable
 	private byte[][] sensorData = new byte[4][2];
 	private int timeout;
 	
+	/**
+	 * Obiekt stworzony za pomocą tego konstruktora nie ma ustawionego połączenia Bluetooth do
+	 * robota, aby był w pełni funkcjonalny należy użyć później metody changeBluetoothConnection
+	 * @param socket Połączenie UDP, przez które przychodzą komendy
+	 * @param timeout Maksymalny czas oczekiwania na odpowiedź robota (w milisekundach)
+	 */
 	public RobotMaster(SocketConnection socket, int timeout)
 	{
 		ss = socket;
@@ -27,17 +42,33 @@ public class RobotMaster implements Runnable
 		robotTalker = new Thread(this);
 	}
 	
+	/**
+	 * Obiekt stworzony za pomocą tego konstruktora nie ma ustawionego połączenia Bluetooth do
+	 * robota, aby był w pełni funkcjonalny należy użyć później metody changeBluetoothConnection
+	 * Domyślny czas oczekiwania na odpowiedź robota to 150 milisekund
+	 * @param socket Połączenie UDP, przez które przychodzą komendy
+	 */
 	public RobotMaster(SocketConnection socket)
 	{
 		this(socket, 150);
 	}
 	
+	/**
+	 * Domyślny czas oczekiwania na odpowiedź robota to 150 milisekund
+	 * @param socket Połączenie UDP, przez które przychodzą komendy
+	 * @param bt Połączenie Bluetooth, ustanowione z robotem
+	 */
 	public RobotMaster(SocketConnection socket, BluetoothConnection bt)
 	{
 		this(socket);
 		changeBluetoothConnection(bt);
 	}
 	
+	/**
+	 * @param socket Połączenie UDP, przez które przychodzą komendy
+	 * @param bt Połączenie Bluetooth, ustanowione z robotem
+	 * @param timeout Maksymalny czas oczekiwania na odpowiedź robota (w milisekundach)
+	 */
 	public RobotMaster(SocketConnection socket, BluetoothConnection bt, int timeout)
 	{
 		this(socket, timeout);
@@ -139,6 +170,10 @@ public class RobotMaster implements Runnable
 		}
 	}
 	
+	/**
+	 * Ustawia połączenie Bluetooth, przez które będzie następowała komunikacja z robotem.
+	 * @param b Połączenie Bluetooth ustanowione z robotem
+	 */
 	public void changeBluetoothConnection(BluetoothConnection b)
 	{
 		synchronized(this)
