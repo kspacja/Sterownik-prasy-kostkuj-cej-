@@ -23,6 +23,13 @@ import javax.swing.SpringLayout;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+/**
+ * Ta klasa jest oknem GUI, pozwalającym na wyszukanie i wybór urządzenia bluetooth, z którym
+ * nawiązane zostanie połączenie bluetooth
+ *
+ * Klasa używa funkcjonalności z pakietu <code>javax.bluetooth</code> aby przeprowadzić wyszukiwanie
+ * urządzeń w otoczeniu.
+ */
 public class SelectDeviceForm extends JDialog implements ActionListener, DiscoveryListener, ListSelectionListener  {
 	private static final long serialVersionUID = -3722504484672472629L;
 	
@@ -39,6 +46,9 @@ public class SelectDeviceForm extends JDialog implements ActionListener, Discove
 	
 	private ArrayList<RemoteDevice> devicesDiscovered;
 
+	/**
+	 * @param parent obiekt będący głównym oknem GUI programu.
+	 */
 	public SelectDeviceForm(NxtBluetoothGUI parent) {
 		super(parent, true); // Uruchom jako okno modalne
 		

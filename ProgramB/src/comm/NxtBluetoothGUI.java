@@ -39,6 +39,14 @@ import javax.swing.border.EtchedBorder;
 import comm.BluetoothConnection;
 import comm.RobotMaster;
 
+/**
+ * Ta klasa jest głównym oknem interfejsu graficznego Programu B.
+ * Pozwala ona użytkownikowi na ustawienie parametrów połączenia z robotem
+ * oraz portu UDP, na który prowadzone jest nasłuchiwanie komend.
+ * 
+ * Parametry ustawiane przez użytkownika w GUI są potem przekazywane obiektowi klasy RobotMaster,
+ * połączonym z tą klasą.
+ */
 public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer, PropertyChangeListener {
 
 	private static final long serialVersionUID = -3722504484672472629L;
@@ -147,10 +155,18 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 		updateConnectionLabel();
 	}
 
+	/**
+	 * Ustawia obiekt RobotMaster, którego parametry będą kontrolowane przez GUI
+	 * @param parent nowy obiekt odpowiedzialny za kontrolowanie robota
+	 */
 	public void setParent(RobotMaster parent) {
 		this.parent = parent;
 	}
 
+	/**
+	 * Ustawia nowy adres bluetooth robota
+	 * @param addr 
+	 */
 	public void setDeviceAddress(String addr)
 	{
 		deviceAddress = addr;
@@ -160,7 +176,6 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 
 	private void wczytajConfig() {
 		// Plik konfiguracyjny, na razie tylko ostatnio uzywane urzadzenie
-		// TODO: zapisywać nazwe, dodac setup portu socket
 		File cnfFile = new File(configFile);
 		if (cnfFile.exists()) {
 			try {
@@ -295,6 +310,11 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 	}
 
 	//	wywolywane z selectdevice
+	/**
+	 * Ustawia adres bluetooth i nazwę robota
+	 * Ta metoda wywoływana jest przez obiekt będący formularzem wyszukiwania i wyboru urządzenia
+	 * @param d obiekt RemoteDevice odpowiadający nowemu urządzeniu (zwracany przez metodę wyszukującą urządzenia bluetooth)
+	 */
 	public void changeDevice(RemoteDevice d) {
 		try {
 			deviceAddress = d.getBluetoothAddress();
@@ -305,6 +325,9 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 		}
 	}
 
+	/**
+	 * Nawiązuje połączenie z robotem, na podstawie ustawionych wcześniej parametrów
+	 */
 	public void connectToDevice() {
 		if (parent!=null) {
 			if (deviceAddress!=null) {
@@ -405,6 +428,10 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 		updateConnectionLabel();
 	}
 
+	/**
+	 * Ustawia obiekt BluetoothConnection, odpowiedzialny za połączenie z robotem
+	 * @param bt nowyu obiekt BluetoothConnection
+	 */
 	public void swapConnection(BluetoothConnection bt)
 	{
 		bc = bt;
@@ -422,6 +449,10 @@ public class NxtBluetoothGUI extends JFrame implements ActionListener, Observer,
 		parent.changeBluetoothConnection(bt);
 	}
 
+	/**
+	 * Tworzy nowy obiekt RobotMaster i łączy go z GUI
+	 * @param port Port UDP, na który będzie prowadzone nasłuchiwanie
+	 */
 	public void newParent(int port)
 	{
 		SocketConnection sc;

@@ -1,7 +1,7 @@
 package comm;
 
 /**
- * Klasa zawiera stałe wartości używane w komendach dla robota
+ * Klasa zawiera stałe wartości używane w bezpośrednich komendach NXT
  */
 public class Constants
 {

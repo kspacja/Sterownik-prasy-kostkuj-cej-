@@ -8,10 +8,6 @@ import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 
 public class Main {
-
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		StringBuilder commandList = new StringBuilder();
 		int waitTime = 0;
